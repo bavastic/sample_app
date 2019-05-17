@@ -33,7 +33,7 @@ class ProductService
     product_by_id(id: product_id).destroy!
   end
 
-  def product_count
+  def products_count
     scoped_products.count
   end
 

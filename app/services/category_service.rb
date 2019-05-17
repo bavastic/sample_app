@@ -8,7 +8,7 @@ class CategoryService
   UPDATE_ATTR = %i(name parent_id)
 
   def fetch!(search: '', sort: {}, pagination: {})
-    records = scoped_categories.search_by(query: search)
+    records = scoped_categories.includes(:parent).search_by(query: search)
     records = sort_relation(relation: records, sort: sort) if sort.present?
 
     paginate_relation(relation: records, **pagination.slice(:current_page, :page_size))
@@ -33,7 +33,7 @@ class CategoryService
     category_by_id(id: category_id).destroy!
   end
 
-  def category_count
+  def categories_count
     scoped_categories.count
   end
 
