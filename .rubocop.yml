@@ -1,0 +1,114 @@
+AllCops:
+  TargetRubyVersion: 2.5.1
+  DisplayCopNames: true
+  Exclude:
+    - 'bin/*'
+    - 'db/schema.rb'
+    - '**/vendor/**/*'
+    - '**/vendor/**/.*'
+    - 'node_modules/**/*'
+
+Bundler/OrderedGems:
+  TreatCommentsAsGroupSeparators: true
+
+Rails:
+  Enabled: true
+
+NotNullColumn:
+  Enabled: false
+
+Documentation:
+  Enabled: false
+  Include:
+    - 'app/**/*'
+    - 'lib/**/*'
+    - 'db/**/*'
+
+DocumentationMethod:
+  Enabled: false
+  RequireForNonPublicMethods: true
+  Include:
+    - 'app/**/*'
+    - 'lib/**/*'
+
+Layout/EmptyLineAfterMagicComment:
+  Enabled: false
+
+Metrics/LineLength:
+  Enabled: true
+  Max: 120
+  Exclude:
+    - '**/*.rake'
+    - 'spec/support/saml_response_support.rb'
+  IgnoreCopDirectives: true
+
+Metrics/BlockLength:
+  Exclude:
+    - 'Rakefile'
+    - '**/*.rake'
+    - 'spec/**/*.rb'
+    - 'app/admin/*.rb'
+    - 'app/api/api_v1/*.rb'
+    - 'app/api/api_v1/entities/*.rb'
+    - 'config/initializers/doorkeeper.rb'
+    - 'config/initializers/devise.rb'
+    - 'db/seeds/**/*.rb'
+  ExcludedMethods:
+    - 'included'
+    - 'configure'
+
+Metrics/ClassLength:
+  Exclude:
+    - app/api/api_v1/*.rb
+    - app/services/api_services/*.rb
+    - app/models/user_ability.rb
+
+Metrics/MethodLength:
+  Exclude:
+    - db/migrate/*.rb
+    - app/models/user_ability.rb
+
+Metrics/ModuleLength:
+  Exclude:
+    - app/models/concerns/**/*.rb
+
+Metrics/AbcSize:
+  Exclude:
+    - db/migrate/*.rb
+    - app/models/user_ability.rb
+    - app/services/api_services/*.rb
+
+Metrics/ParameterLists:
+  Exclude:
+    - app/services/api_services/*.rb
+
+# This rule enforces the same delimiters to be used everywhere for %-literals.
+# Each type of %-literal can be configured to use it's own specific notation when needed.
+Style/PercentLiteralDelimiters:
+  PreferredDelimiters:
+    '%':  ()
+    '%i': ()
+    '%q': ()
+    '%Q': ()
+    '%r': '{}'
+    '%s': ()
+    '%w': ()
+    '%W': ()
+    '%x': ()
+
+Style/FrozenStringLiteralComment:
+  Enabled: true
+
+Style/MixinUsage:
+  Exclude:
+    - db/seeds/**/*.rb
+
+# This rule ensures that all Regex expression are written using the same style.
+# The current configuration will be inline with the string array where %w is forced.
+Style/RegexpLiteral:
+  EnforcedStyle: percent_r
+  AllowInnerSlashes: false
+
+Style/BlockDelimiters:
+  Exclude:
+    - app/models/user_ability.rb
