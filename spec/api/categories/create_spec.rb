@@ -25,26 +25,6 @@ RSpec.describe 'CreateCategory', class: CategoriesController do
       it { expect(response.status).to eq(500) }
     end
 
-    # context 'with invalid fields' do
-    #   context 'parent id is not exist' do
-    #     let!(:other_category) do
-    #       create(:category,
-    #              :external,
-    #              key: category_params[:data][:attributes][:key],
-    #              name: category_params[:data][:attributes][:name])
-    #     end
-
-    #     it { expect(response.status).to eq(422) }
-
-    #     it 'returns active record errors' do
-    #       expect(jsonapi_errors.map { |e| jsonapi_error_source_pointer(error: e) }).to eq(['/data/attributes/key',
-    #                                                                                        '/data/attributes/name'])
-    #       expect(jsonapi_errors.map { |e| jsonapi_error_title(error: e) }).to eq(['has already been taken',
-    #                                                                               'has already been taken'])
-    #     end
-    #   end
-    # end
-
     context 'with filled valid fields' do
       let(:json_response) do
         {

@@ -24,32 +24,20 @@ RSpec.describe 'UpdateProduct', class: ProductsController do
       }
     end
 
+    context 'with wrong id param' do
+      let(:product_id) { 0 }
+
+      before { execute }
+
+      it { expect(response.status).to eq(404) }
+    end
+
     context 'with missing fields' do
       let(:product_params) { {} }
       before { execute }
 
       it { expect(response.status).to eq(500) }
     end
-
-    # context 'with invalid fields' do
-    #   context 'parent id is not exist' do
-    #     let!(:other_product) do
-    #       create(:product,
-    #              :external,
-    #              key: product_params[:data][:attributes][:key],
-    #              name: product_params[:data][:attributes][:name])
-    #     end
-
-    #     it { expect(response.status).to eq(422) }
-
-    #     it 'returns active record errors' do
-    #       expect(jsonapi_errors.map { |e| jsonapi_error_source_pointer(error: e) }).to eq(['/data/attributes/key',
-    #                                                                                        '/data/attributes/name'])
-    #       expect(jsonapi_errors.map { |e| jsonapi_error_title(error: e) }).to eq(['has already been taken',
-    #                                                                               'has already been taken'])
-    #     end
-    #   end
-    # end
 
     context 'with filled valid fields' do
       let(:json_response) do
@@ -79,7 +67,7 @@ RSpec.describe 'UpdateProduct', class: ProductsController do
       it { expect { execute }.to change { product.reload.category_id } }
       it { expect { execute }.to change { product.reload.price } }
       it { expect { execute }.to change { product.reload.currency } }
-      it { expect { execute }.to change { product.reload.displayCurrency } }
+      it { expect { execute }.to change { product.reload.display_currency } }
       it { expect { execute }.to_not(change { product.reload.id }) }
     end
 

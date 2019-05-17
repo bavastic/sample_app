@@ -12,17 +12,17 @@ RSpec.describe 'GetOneCategory', class: CategoriesController do
     let(:category) { create(:category, parent: category_parent) }
 
     context 'with correct id param' do
-      let(:product_count) { 10 }
-      let!(:products) { create_list(:product, product_count, category: category) }
+      let(:products_count) { 10 }
+      let!(:products) { create_list(:product, products_count, category: category) }
 
       let(:json_response) do
         {
           id: category.id,
-          displayName: category.displayName,
+          displayName: "#{category.parent.name} > #{category.name}",
           name: category.name,
           parentId: category_parent.id,
           parentName: category_parent.name,
-          productsCount: product_count
+          productsCount: products_count
         }
       end
 

@@ -8,15 +8,15 @@ RSpec.describe 'GetListCategory', class: CategoriesController do
     let(:path) { '/api/categories' }
     let(:execute) { get path, params: fetch_params }
     let(:category_parent) { create(:category) }
-    let(:category_count) { 3 }
-    let!(:categories) { create_list(:category, category_count, parent: category_parent) }
+    let(:categories_count) { 3 }
+    let!(:categories) { create_list(:category, categories_count, parent: category_parent) }
     let(:all_categories) { [category_parent] + categories }
-    let(:product_count) { 2 }
+    let(:products_count) { 2 }
     let(:fetch_params) { {} }
     let(:service_class) { CategoryService }
 
     before do
-      all_categories.each { |category| create_list(:product, product_count, category: category)}
+      all_categories.each { |category| create_list(:product, products_count, category: category)}
     end
 
     context 'without params' do
@@ -30,8 +30,12 @@ RSpec.describe 'GetListCategory', class: CategoriesController do
           category = all_categories.find { |c| c.id == category_resp[:id] }
 
           expect(category_resp[:name]).to eq category.name
-          expect(category_resp[:displayName]).to eq category.displayName
-          expect(category_resp[:parentName]).to eq category.parent_name
+          if category.parent # in case of parent there is a special display name
+            expect(category_resp[:displayName]).to eq "#{category.parent.name} > #{category.name}"
+          else
+            expect(category_resp[:displayName]).to eq category.name
+          end
+          expect(category_resp[:parentName]).to eq category.parent&.name
           expect(category_resp[:productsCount]).to eq category.products_count
           expect(category_resp[:parentId]).to eq category.parent_id
         end

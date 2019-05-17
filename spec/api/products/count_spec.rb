@@ -8,14 +8,14 @@ RSpec.describe 'CountProduct', class: ProductsController do
     let(:path) { '/api/products/count' }
     let(:execute) { get path }
     let!(:category) { create(:category) }
-    let(:product_count) { 10 }
-    let!(:products) { create_list(:product, product_count, category: category) }
+    let(:products_count) { 10 }
+    let!(:products) { create_list(:product, products_count, category: category) }
 
     context 'check the http response' do
       before { execute }
 
       it { expect(response.status).to eq(200) }
-      it { expect(json).to eq({ count: product_count }) }
+      it { expect(json).to eq({ count: products_count }) }
     end
 
     context 'check the service interface' do
@@ -25,7 +25,7 @@ RSpec.describe 'CountProduct', class: ProductsController do
         expect(ProductService).to receive(:new).and_return(service)
 
         expect(service).to(
-          receive(:product_count).and_return(product_count)
+          receive(:products_count).and_return(products_count)
         )
 
         execute

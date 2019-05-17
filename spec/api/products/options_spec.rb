@@ -8,8 +8,8 @@ RSpec.describe 'OptionsProduct', class: ProductsController do
     let(:path) { '/api/products/options' }
     let(:execute) { get path }
     let!(:category) { create(:category) }
-    let(:product_count) { 10 }
-    let!(:products) { create_list(:product, product_count, category: category) }
+    let(:products_count) { 10 }
+    let!(:products) { create_list(:product, products_count, category: category) }
     let(:service_class) { ProductService }
 
     context 'without params' do

@@ -7,8 +7,8 @@ RSpec.describe 'OptionsCategory', class: CategoriesController do
   describe 'GET api/categories/options' do
     let(:path) { '/api/categories/options' }
     let(:execute) { get path }
-    let(:category_count) { 10 }
-    let!(:categories) { create_list(:category, category_count) }
+    let(:categories_count) { 10 }
+    let!(:categories) { create_list(:category, categories_count) }
     let(:service_class) { CategoryService }
 
     context 'without params' do

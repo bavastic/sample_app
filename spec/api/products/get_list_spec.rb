@@ -8,9 +8,9 @@ RSpec.describe 'GetListProduct', class: ProductsController do
     let(:path) { '/api/products' }
     let(:execute) { get path, params: fetch_params }
     let!(:category) { create(:category) }
-    let(:product_count) { 3 }
-    let!(:products) { create_list(:product, product_count, category: category) }
-    let(:product_count) { 2 }
+    let(:products_count) { 3 }
+    let!(:products) { create_list(:product, products_count, category: category) }
+    let(:products_count) { 2 }
     let(:fetch_params) { {} }
     let(:service_class) { ProductService }
 
@@ -25,9 +25,9 @@ RSpec.describe 'GetListProduct', class: ProductsController do
           product = products.find { |c| c.id == product_resp[:id] }
 
           expect(product_resp[:name]).to eq product.name
-          expect(product_resp[:displayName]).to eq product.displayName
+          expect(product_resp[:displayName]).to eq product.name
           expect(product_resp[:categoryName]).to eq category.name
-          expect(product_resp[:displayCurrency]).to eq product.displayCurrency
+          expect(product_resp[:displayCurrency]).to eq product.display_currency
           expect(product_resp[:categoryId]).to eq product.category.id
         end
       end

@@ -23,11 +23,11 @@ RSpec.describe 'GetOneProduct', class: ProductsController do
       let(:json_response) do
         {
           id: product.id,
-          displayName: product.displayName,
+          displayName: product.name,
           name: product.name,
           categoryId: category.id,
           categoryName: category.name,
-          displayCurrency: product.displayCurrency
+          displayCurrency: product.display_currency
         }
       end
 
