@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class CategoriesController < ApplicationController
   include Swagger::Blocks
 
@@ -28,12 +30,9 @@ class CategoriesController < ApplicationController
   end
 
   def count
-    begin
-      @count = Category.count
-      render json: {count: @count}
-    rescue Exception
-      render json: {notification: {level: 'error', message: 'Cannot count categories: unknown error!'}}, status: :internal_server_error
-    end
+    render json: { count: service.category_count }
+  rescue Exception
+    render json: { notification: { level: 'error', message: 'Cannot count categories: unknown error!' } }, status: :internal_server_error
   end
 
   # GET /categories
@@ -91,25 +90,10 @@ class CategoriesController < ApplicationController
   end
 
   def index
-    begin
-      @categories = Category.order(:id)
-
-      if params.include?(:query) && params[:query].to_s.length > 0
-        @categories = @categories.where("name like '%#{params[:query]}%'")
-      end
-
-      if params.include?(:per_page) && params.include?(:page)
-        limit = params[:per_page].to_i
-        offset = limit * (params[:page].to_i - 1)
-
-        @categories = @categories.limit(limit)
-        @categories = @categories.offset(offset) if offset > 0
-      end
-
-      render json: @categories.as_json
-    rescue Exception
-      render json: {notification: {level: 'error', message: 'Cannot list categories: unknown error!'}}, status: :internal_server_error
-    end
+    paginated_categories = service.fetch!(search: params[:query], sort: { id: :asc }, pagination: pagination_attr)
+    render json: paginated_categories.collection.as_json
+  rescue Exception
+    render json: { notification: { level: 'error', message: 'Cannot list categories: unknown error!' } }, status: :internal_server_error
   end
 
   # GET /categories/:id
@@ -151,14 +135,13 @@ class CategoriesController < ApplicationController
   end
 
   def show
-    begin
-      @category = Category.find(params[:id])
-      render json: @category.as_json
-    rescue ActiveRecord::RecordNotFound
-      render json: {notification: {level: 'error', message: 'Cannot show category: record not found!'}}, status: :not_found
-    rescue Exception
-      render json: {notification: {level: 'error', message: 'Cannot show category: unknown error!'}}, status: :internal_server_error
-    end
+    category = service.find!(category_id: params[:id])
+
+    render json: category.as_json
+  rescue ActiveRecord::RecordNotFound
+    render json: { notification: { level: 'error', message: 'Cannot show category: record not found!' } }, status: :not_found
+  rescue Exception
+    render json: { notification: { level: 'error', message: 'Cannot show category: unknown error!' } }, status: :internal_server_error
   end
 
   # DELETE /categories/:id
@@ -200,14 +183,13 @@ class CategoriesController < ApplicationController
   end
 
   def destroy
-    begin
-      @category = Category.find(params[:id]).destroy
-      render json: @category.as_json
-    rescue ActiveRecord::RecordNotFound
-      render json: {notification: {level: 'error', message: 'Cannot destroy category: record not found!'}}, status: :not_found
-    rescue Exception
-      render json: {notification: {level: 'error', message: 'Cannot destroy category: unknown error!'}}, status: :internal_server_error
-    end
+    category = service.destroy!(category_id: params[:id])
+
+    render json: category.as_json
+  rescue ActiveRecord::RecordNotFound
+    render json: { notification: { level: 'error', message: 'Cannot destroy category: record not found!' } }, status: :not_found
+  rescue Exception
+    render json: { notification: { level: 'error', message: 'Cannot destroy category: unknown error!' } }, status: :internal_server_error
   end
 
   # PUT /categories/:id
@@ -252,19 +234,15 @@ class CategoriesController < ApplicationController
   end
 
   def update
-    begin
-      @category = Category.find(params[:id])
+    category = service.update!(category_id: params[:id], category_attr: category_attr)
 
-      if @category.update_attributes(company_params)
-        render json: @category.as_json
-      else
-        render json: {notification: {level: 'error', message: 'Cannot update category!'}}, status: :not_acceptable
-      end
-    rescue ActiveRecord::RecordNotFound
-      render json: {notification: {level: 'error', message: 'Cannot delete category: record not found!'}}, status: :not_found
-    rescue Exception
-      render json: {notification: {level: 'error', message: 'Cannot delete category: unknown error!'}}, status: :internal_server_error
-    end
+    render json: category.as_json
+  rescue ActiveRecord::RecordInvalid
+    render json: { notification: { level: 'error', message: 'Cannot update category!' } }, status: :not_acceptable
+  rescue ActiveRecord::RecordNotFound
+    render json: { notification: { level: 'error', message: 'Cannot delete category: record not found!' } }, status: :not_found
+  rescue Exception
+    render json: { notification: { level: 'error', message: 'Cannot delete category: unknown error!' } }, status: :internal_server_error
   end
 
   # POST /categories
@@ -309,17 +287,13 @@ class CategoriesController < ApplicationController
   end
 
   def create
-    begin
-      @category = Category.new(company_params)
+    category = service.create!(category_attr: category_attr)
 
-      if @category.save
-        render json: @category.as_json
-      else
-        render json: {notification: {level: 'error', message: 'Cannot create category!'}}, status: :not_acceptable
-      end
-    rescue Exception
-      render json: {notification: {level: 'error', message: 'Cannot delete category: unknown error!'}}, status: :internal_server_error
-    end
+    render json: category.as_json
+  rescue ActiveRecord::RecordInvalid
+    render json: { notification: { level: 'error', message: 'Cannot create category!' } }, status: :not_acceptable
+  rescue Exception
+    render json: { notification: { level: 'error', message: 'Cannot delete category: unknown error!' } }, status: :internal_server_error
   end
 
   # GET /categories/options
@@ -353,18 +327,31 @@ class CategoriesController < ApplicationController
   end
 
   def options
-    begin
-      @categories = Category.order(:name)
-      render json: @categories.as_json(only: [], methods: [:value, :text])
-    rescue Exception
-      render json: {notification: {level: 'error', message: 'Cannot fetch categories: unknown error!'}}, status: :internal_server_error
-    end
+    categories = service.fetch!(sort: { name: :asc })
+    render json: categories.collection.as_json(only: [], methods: %i(value text))
+  rescue Exception
+    render json: { notification: { level: 'error', message: 'Cannot fetch categories: unknown error!' } }, status: :internal_server_error
   end
 
   private
 
-  def company_params
-    params.require(:category).permit(:name, :parentId)
+  def category_attr
+    @category_attr ||= {
+      name: category_params[:name],
+      parent_id: category_params[:parentId]
+    }
   end
 
+  def pagination_attr
+    return {} unless params[:page] && params[:per_page]
+    { current_page: params[:page], page_size: params[:per_page] }
+  end
+
+  def category_params
+    @category_params ||= params.require(:category).permit(:name, :parentId)
+  end
+
+  def service
+    @sevice ||= CategoryService.new
+  end
 end
