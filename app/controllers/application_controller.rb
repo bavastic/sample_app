@@ -8,4 +8,9 @@ class ApplicationController < ActionController::Base
       mem[k.underscore.to_sym] = v
     end
   end
+
+  def pagination_attr
+    return {} unless params[:page] && params[:per_page]
+    { current_page: params[:page], page_size: params[:per_page] }
+  end
 end
