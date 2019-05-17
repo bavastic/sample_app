@@ -3,15 +3,15 @@
 class ProductsController < ApplicationController
   # GET /products/count
   def count
-    render json: { count: service.product_count }
+    render json: { count: service.products_count }
   rescue Exception
-    render json: { notification: { level: 'error', message: 'Cannot count @products: unknown error!' } }, status: :internal_server_error
+    render json: { notification: { level: 'error', message: 'Cannot count products: unknown error!' } }, status: :internal_server_error
   end
 
   # GET /products
   def index
     paginated_products = service.fetch!(search: params[:query], sort: { id: :asc }, pagination: pagination_attr)
-    render json: paginated_products.collection.as_json
+    render json: paginated_products.collection
   rescue Exception
     render json: { notification: { level: 'error', message: 'Cannot list products: unknown error!' } }, status: :internal_server_error
   end
@@ -20,7 +20,7 @@ class ProductsController < ApplicationController
   def show
     product = service.find!(product_id: params[:id])
 
-    render json: product.as_json
+    render json: product
   rescue ActiveRecord::RecordNotFound
     render json: { notification: { level: 'error', message: 'Cannot show product: record not found!' } }, status: :not_found
   rescue Exception
@@ -31,7 +31,7 @@ class ProductsController < ApplicationController
   def destroy
     product = service.destroy!(product_id: params[:id])
 
-    render json: product.as_json
+    render json: product
   rescue ActiveRecord::RecordNotFound
     render json: { notification: { level: 'error', message: 'Cannot destroy product: record not found!' } }, status: :not_found
   rescue Exception
@@ -42,7 +42,7 @@ class ProductsController < ApplicationController
   def update
     product = service.update!(product_id: params[:id], product_attr: product_attr)
 
-    render json: product.as_json
+    render json: product
   rescue ActiveRecord::RecordInvalid
     render json: { notification: { level: 'error', message: 'Cannot update product!' } }, status: :not_acceptable
   rescue ActiveRecord::RecordNotFound
@@ -55,7 +55,7 @@ class ProductsController < ApplicationController
   def create
     product = service.create!(product_attr: product_attr)
 
-    render json: product.as_json
+    render json: product
   rescue ActiveRecord::RecordInvalid
     render json: { notification: { level: 'error', message: 'Cannot create product!' } }, status: :not_acceptable
   rescue Exception
@@ -65,7 +65,7 @@ class ProductsController < ApplicationController
   # GET /products/options
   def options
     paginated_products = service.fetch!(sort: { name: :asc })
-    render json: paginated_products.collection.as_json(only: [], methods: %i(value text))
+    render json: paginated_products.collection, each_serializer: ProductOptionSerializer
   rescue Exception
     render json: { notification: { level: 'error', message: 'Cannot fetch products: unknown error!' } }, status: :internal_server_error
   end
@@ -73,12 +73,7 @@ class ProductsController < ApplicationController
   private
 
   def product_attr
-    @product_attr ||= @category_attr ||= hash_keys_to_snake_case(hash: product_params.to_h)
-  end
-
-  def pagination_attr
-    return {} unless params[:page] && params[:per_page]
-    { current_page: params[:page], page_size: params[:per_page] }
+    @product_attr ||= hash_keys_to_snake_case(hash: product_params.to_h)
   end
 
   def product_params
