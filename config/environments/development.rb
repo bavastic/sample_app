@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 Rails.application.configure do
   # Verifies that versions and hashed value of the package contents in the project's package.json
   config.webpacker.check_yarn_integrity = true
@@ -62,5 +64,5 @@ Rails.application.configure do
   config.file_watcher = ActiveSupport::EventedFileUpdateChecker
 
   # Enable javascript_pack_tag to load assets from webpack-dev-server
-  config.x.webpacker[:dev_server_host] = "http://127.0.0.1:8080"
+  config.x.webpacker[:dev_server_host] = 'http://127.0.0.1:8080'
 end
