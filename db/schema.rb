@@ -10,14 +10,14 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018112102) do
+ActiveRecord::Schema.define(version: 2019_05_16_131846) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
   create_table "categories", force: :cascade do |t|
     t.bigint "parent_id"
-    t.string "name"
+    t.string "name", null: false
     t.integer "products_count"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -27,7 +27,7 @@ ActiveRecord::Schema.define(version: 2018112102) do
 
   create_table "products", force: :cascade do |t|
     t.bigint "category_id"
-    t.string "name"
+    t.string "name", null: false
     t.decimal "price"
     t.string "currency", default: "EUR"
     t.string "display_currency", default: "EUR"
