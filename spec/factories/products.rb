@@ -4,7 +4,7 @@
 #
 #  id               :bigint           not null, primary key
 #  category_id      :bigint
-#  name             :string
+#  name             :string           not null
 #  price            :decimal(, )
 #  currency         :string           default("EUR")
 #  display_currency :string           default("EUR")
@@ -18,6 +18,7 @@ FactoryBot.define do
   factory :product do
     name { generate(:product_name) }
     price { Faker::Number.decimal(2, 2) }
+    category { create(:category) }
 
     after(:build) do |product|
       currency_code = Faker::Currency.code
