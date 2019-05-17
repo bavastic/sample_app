@@ -5,16 +5,20 @@ RSpec.describe ProductService do
   subject { described_class.new }
   let(:category) { create(:category) }
 
-  describe '.fetch!' do
+  describe '#fetch!' do
     let(:execute) { subject.fetch!(search: search, sort: sort, pagination: pagination) }
     let(:search) { '' }
     let(:sort) { {} }
     let(:pagination) { {} }
-    let(:product_count) { 10 }
-    let!(:products) { create_list(:product, product_count, category: category) }
+    let(:products_count) { 10 }
+    let!(:products) { create_list(:product, products_count, category: category) }
 
     context 'without params' do
-      it { expect(execute.collection.size).to eq(product_count) }
+      it 'preloads associations' do
+        expect(execute.collection.first.association(:category)).to be_loaded
+      end
+
+      it { expect(execute.collection.size).to eq(products_count) }
       it { expect(execute).to be_a Helpers::Pagination::ResponseValueObject }
       it { expect(execute.collection).to all(be_a Product) }
       it { expect(execute.collection.map(&:id)).to match_array(products.map(&:id)) }
@@ -32,9 +36,9 @@ RSpec.describe ProductService do
       it { expect(execute.collection.size).to eq(page_size) }
       it { expect(execute.collection).to all(be_a Product) }
       it { expect(execute.collection.map(&:id)).to match_array(paginated_ids) }
-      it { expect(execute.total_count).to be product_count }
+      it { expect(execute.total_count).to be products_count }
       it { expect(execute.limit_value).to be page_size }
-      it { expect(execute.total_pages).to be (product_count / page_size) }
+      it { expect(execute.total_pages).to be (products_count / page_size) }
       it { expect(execute.current_page).to be current_page }
     end
 
@@ -83,7 +87,7 @@ RSpec.describe ProductService do
     end
   end
 
-  describe '.find!' do
+  describe '#find!' do
     let(:execute) { subject.find!(product_id: product_id) }
 
     context 'valid product id' do
@@ -102,7 +106,7 @@ RSpec.describe ProductService do
     end
   end
 
-  describe '.create!' do
+  describe '#create!' do
     let(:execute) { subject.create!(product_attr: product_attr) }
     let!(:product) { create(:product, category: category) }
 
@@ -132,12 +136,12 @@ RSpec.describe ProductService do
     end
   end
 
-  describe '.update!' do
+  describe '#update!' do
     let(:execute) { subject.update!(product_id: product.id, product_attr: product_attr) }
     let(:product) { create(:product, category: category) }
 
     context 'with valid product attr' do
-      let(:product_attr) { attributes_for(:product) }
+      let(:product_attr) { attributes_for(:product, category: category) }
 
       it 'touch updated date' do
         expect { execute }.to(change { product.reload.updated_at } )
@@ -161,7 +165,7 @@ RSpec.describe ProductService do
     end
   end
 
-  describe '.destroy!' do
+  describe '#destroy!' do
     let(:execute) { subject.destroy!(product_id: product_id) }
 
     context 'with valid id' do
@@ -186,11 +190,11 @@ RSpec.describe ProductService do
     end
   end
 
-  describe '.product_count' do
-    let(:execute) { subject.product_count }
-    let(:product_count) { 10 }
-    let!(:products) { create_list(:product, product_count, category: category)}
+  describe '#products_count' do
+    let(:execute) { subject.products_count }
+    let(:products_count) { 10 }
+    let!(:products) { create_list(:product, products_count, category: category)}
 
-    it { expect(execute).to be product_count }
+    it { expect(execute).to be products_count }
   end
 end

@@ -4,16 +4,20 @@ require 'rails_helper'
 RSpec.describe CategoryService do
   subject { described_class.new }
 
-  describe '.fetch!' do
+  describe '#fetch!' do
     let(:execute) { subject.fetch!(search: search, sort: sort, pagination: pagination) }
     let(:search) { '' }
     let(:sort) { {} }
     let(:pagination) { {} }
-    let(:category_count) { 10 }
-    let!(:categories) { create_list(:category, category_count) }
+    let(:categories_count) { 10 }
+    let!(:categories) { create_list(:category, categories_count) }
 
     context 'without params' do
-      it { expect(execute.collection.size).to eq(category_count) }
+      it 'preloads associations' do
+        expect(execute.collection.first.association(:parent)).to be_loaded
+      end
+
+      it { expect(execute.collection.size).to eq(categories_count) }
       it { expect(execute).to be_a Helpers::Pagination::ResponseValueObject }
       it { expect(execute.collection).to all(be_a Category) }
       it { expect(execute.collection.map(&:id)).to match_array(categories.map(&:id)) }
@@ -31,9 +35,9 @@ RSpec.describe CategoryService do
       it { expect(execute.collection.size).to eq(page_size) }
       it { expect(execute.collection).to all(be_a Category) }
       it { expect(execute.collection.map(&:id)).to match_array(paginated_ids) }
-      it { expect(execute.total_count).to be category_count }
+      it { expect(execute.total_count).to be categories_count }
       it { expect(execute.limit_value).to be page_size }
-      it { expect(execute.total_pages).to be (category_count / page_size) }
+      it { expect(execute.total_pages).to be (categories_count / page_size) }
       it { expect(execute.current_page).to be current_page }
     end
 
@@ -82,7 +86,7 @@ RSpec.describe CategoryService do
     end
   end
 
-  describe '.find!' do
+  describe '#find!' do
     let(:execute) { subject.find!(category_id: category_id) }
 
     context 'valid category id' do
@@ -101,7 +105,7 @@ RSpec.describe CategoryService do
     end
   end
 
-  describe '.create!' do
+  describe '#create!' do
     let(:execute) { subject.create!(category_attr: category_attr) }
     let!(:category_parent) { create(:category) }
 
@@ -131,7 +135,7 @@ RSpec.describe CategoryService do
     end
   end
 
-  describe '.update!' do
+  describe '#update!' do
     let(:execute) { subject.update!(category_id: category.id, category_attr: category_attr) }
     let(:category) { create(:category) }
 
@@ -159,7 +163,7 @@ RSpec.describe CategoryService do
     end
   end
 
-  describe '.destroy!' do
+  describe '#destroy!' do
     let(:execute) { subject.destroy!(category_id: category_id) }
 
     context 'with valid id' do
@@ -184,11 +188,11 @@ RSpec.describe CategoryService do
     end
   end
 
-  describe '.category_count' do
-    let(:execute) { subject.category_count }
-    let(:category_count) { 10 }
-    let!(:categories) { create_list(:category, category_count)}
+  describe '#categories_count' do
+    let(:execute) { subject.categories_count }
+    let(:categories_count) { 10 }
+    let!(:categories) { create_list(:category, categories_count)}
 
-    it { expect(execute).to be category_count }
+    it { expect(execute).to be categories_count }
   end
 end
