@@ -30,8 +30,8 @@ class ApidocsController < ActionController::Base
   end
 
   SWAGGERED_CLASSES = [
-    CategoriesController,
-    Category,
+    ApiSwagger::CategorySchema,
+    ApiSwagger::CategoriesController,
     self
   ].freeze
 
