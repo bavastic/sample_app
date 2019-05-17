@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class ApidocsController < ActionController::Base
   include Swagger::Blocks
 
@@ -21,7 +23,7 @@ class ApidocsController < ActionController::Base
     end
 
     key :host, 'shoppu-frontend.herokuapp.com'
-    key :schemes, ['http', 'https']
+    key :schemes, %w(http https)
     key :basePath, '/api'
     key :consumes, ['application/json']
     key :produces, ['application/json']
@@ -30,7 +32,7 @@ class ApidocsController < ActionController::Base
   SWAGGERED_CLASSES = [
     CategoriesController,
     Category,
-    self,
+    self
   ].freeze
 
   def index
