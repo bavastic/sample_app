@@ -327,8 +327,8 @@ class CategoriesController < ApplicationController
   end
 
   def options
-    categories = service.fetch!(sort: { name: :asc })
-    render json: categories.collection.as_json(only: [], methods: %i(value text))
+    paginated_categories = service.fetch!(sort: { name: :asc })
+    render json: paginated_categories.collection.as_json(only: [], methods: %i(value text))
   rescue Exception
     render json: { notification: { level: 'error', message: 'Cannot fetch categories: unknown error!' } }, status: :internal_server_error
   end
@@ -336,10 +336,7 @@ class CategoriesController < ApplicationController
   private
 
   def category_attr
-    @category_attr ||= {
-      name: category_params[:name],
-      parent_id: category_params[:parentId]
-    }
+    @category_attr ||= hash_keys_to_snake_case(hash: category_params.to_h)
   end
 
   def pagination_attr
