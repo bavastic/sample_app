@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 require 'rails_helper'
 
-RSpec.describe 'CountProduct', class: CategoriesController do
+RSpec.describe 'CountProduct', class: ProductsController do
   include ApiJsonSupport
 
   describe 'GET api/products/count' do

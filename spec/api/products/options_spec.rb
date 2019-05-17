@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 require 'rails_helper'
 
-RSpec.describe 'OptionsProduct', class: CategoriesController do
+RSpec.describe 'OptionsProduct', class: ProductsController do
   include ApiJsonSupport
 
   describe 'GET api/products/options' do

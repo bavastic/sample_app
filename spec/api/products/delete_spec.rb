@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 require 'rails_helper'
 
-RSpec.describe 'DeleteProduct', class: CategoriesController do
+RSpec.describe 'DeleteProduct', class: ProductsController do
   describe 'DELETE api/products/:id' do
     let(:path) { "/api/products/#{product_id}" }
     let(:execute) { delete path }

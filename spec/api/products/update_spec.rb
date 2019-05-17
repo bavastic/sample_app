@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 require 'rails_helper'
 
-RSpec.describe 'UpdateProduct', class: CategoriesController do
+RSpec.describe 'UpdateProduct', class: ProductsController do
   include ApiJsonSupport
 
   describe 'PUT api/products' do
@@ -92,7 +92,7 @@ RSpec.describe 'UpdateProduct', class: CategoriesController do
           category_id: product_params[:product][:categoryId].to_s,
           price: product_params[:product][:price].to_s,
           currency: product_params[:product][:currency],
-          displayCurrency: product_params[:product][:displayCurrency]
+          display_currency: product_params[:product][:displayCurrency]
         }
       end
 

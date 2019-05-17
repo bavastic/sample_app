@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 require 'rails_helper'
 
-RSpec.describe 'CreateProduct', class: CategoriesController do
+RSpec.describe 'CreateProduct', class: ProductsController do
   include ApiJsonSupport
 
   describe 'POST api/products' do
@@ -81,7 +81,7 @@ RSpec.describe 'CreateProduct', class: CategoriesController do
           category_id: product_params[:product][:categoryId].to_s,
           price: product_params[:product][:price].to_s,
           currency: product_params[:product][:currency],
-          displayCurrency: product_params[:product][:displayCurrency]
+          display_currency: product_params[:product][:displayCurrency]
         }
       end
 

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 require 'rails_helper'
 
-RSpec.describe 'GetOneProduct', class: CategoriesController do
+RSpec.describe 'GetOneProduct', class: ProductsController do
   include ApiJsonSupport
 
   describe 'GET api/products/:id' do
@@ -9,7 +9,7 @@ RSpec.describe 'GetOneProduct', class: CategoriesController do
     let(:execute) { get path }
     let(:product_id) { product.id }
     let!(:category) { create(:category) }
-    let(:product) { create(:product, category: category) }
+    let!(:product) { create(:product, category: category) }
 
     context 'with wrong id param' do
       let(:product_id) { 0 }
@@ -20,9 +20,6 @@ RSpec.describe 'GetOneProduct', class: CategoriesController do
     end
 
     context 'with correct id param' do
-      let(:product_count) { 10 }
-      let!(:products) { create_list(:product, product_count, category: category) }
-
       let(:json_response) do
         {
           id: product.id,
