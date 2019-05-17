@@ -11,14 +11,6 @@ RSpec.describe 'GetOneCategory', class: CategoriesController do
     let(:category_parent) { create(:category) }
     let(:category) { create(:category, parent: category_parent) }
 
-    context 'with wrong id param' do
-      let(:category_id) { 0 }
-
-      before { execute }
-
-      it { expect(response.status).to eq(404) }
-    end
-
     context 'with correct id param' do
       let(:product_count) { 10 }
       let!(:products) { create_list(:product, product_count, category: category) }
