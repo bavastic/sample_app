@@ -22,6 +22,8 @@ class Category < ApplicationRecord
 
   scope :search_by_name, ->(name) { where('name ILIKE ?', "%#{name}%") }
 
+  has_unique_identifier :g_identifier, segment_count: 3, segment_size: 2, delimiter: '-'
+
   def self.search_by(query:)
     search_by_name(query)
   end

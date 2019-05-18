@@ -21,6 +21,8 @@ class Product < ApplicationRecord
 
   before_save :default_values
 
+  has_unique_identifier :p_identifier, segment_count: 2, segment_size: 3, delimiter: '/'
+
   scope :search_by_name, ->(name) { where('name ILIKE ?', "%#{name}%") }
 
   def self.search_by(query:)

@@ -29,6 +29,15 @@ RSpec.describe Product do
       it 'increments the products_count on category' do
         expect { model.save }.to change { category.reload.products_count }.by(1)
       end
+
+      it 'setups the identifier' do
+        expect { model.save }.to change { model.p_identifier }.from(nil).to(/\A\w{3}\/\w{3}\z/)
+      end
+
+      it 'it doesnt rewrite the identifier' do
+        model.save
+        expect { model.save }.to_not(change { model.reload.p_identifier })
+      end
     end
 
     context 'without required params' do

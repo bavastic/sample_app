@@ -22,6 +22,15 @@ RSpec.describe Category do
       let(:model) { build(:category) }
 
       it { expect { model.save }.to change { Category.count }.by(1) }
+
+      it 'setups the identifier' do
+        expect { model.save }.to change { model.g_identifier }.from(nil).to(/\A\w{2}-\w{2}-\w{2}\z/)
+      end
+
+      it 'it doesnt rewrite the identifier' do
+        model.save
+        expect { model.save }.to_not(change { model.reload.g_identifier })
+      end
     end
 
     context 'without required params' do
