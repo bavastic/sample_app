@@ -10,13 +10,14 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_05_18_122942) do
+ActiveRecord::Schema.define(version: 2019_05_18_172230) do
 
   # These are extensions that must be enabled in order to support this database
+  enable_extension "pgcrypto"
   enable_extension "plpgsql"
 
-  create_table "categories", force: :cascade do |t|
-    t.bigint "parent_id"
+  create_table "categories", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "parent_id"
     t.string "name", null: false
     t.integer "products_count", default: 0
     t.datetime "created_at", null: false
@@ -27,8 +28,8 @@ ActiveRecord::Schema.define(version: 2019_05_18_122942) do
     t.index ["parent_id"], name: "index_categories_on_parent_id"
   end
 
-  create_table "products", force: :cascade do |t|
-    t.bigint "category_id"
+  create_table "products", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "category_id"
     t.string "name", null: false
     t.decimal "price"
     t.string "currency", default: "EUR"
@@ -40,5 +41,6 @@ ActiveRecord::Schema.define(version: 2019_05_18_122942) do
     t.index ["p_identifier"], name: "index_products_on_p_identifier", unique: true
   end
 
+  add_foreign_key "categories", "categories", column: "parent_id"
   add_foreign_key "products", "categories"
 end
