@@ -9,6 +9,7 @@ gem 'active_model_serializers', '~> 0.10.9'
 gem 'bootsnap', '>= 1.1.0', require: false
 gem 'coffee-rails', '~> 4.2'
 gem 'faker'
+gem 'has_unique_identifier', path: 'lib/has_unique_identifier'
 gem 'jbuilder', '~> 2.5'
 gem 'kaminari'
 gem 'loofah', '>= 2.2.3'
