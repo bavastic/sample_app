@@ -37,7 +37,7 @@ class ApplicationController < ActionController::Base
   end
 
   def error_target
-    I18n.t("errors.#{controller_name}.#{action_name}")
+    I18n.t("errors.api.#{controller_name}.#{action_name}")
   end
 
   def render_error(message:, status:)
