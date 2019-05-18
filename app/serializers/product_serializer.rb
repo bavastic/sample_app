@@ -22,6 +22,7 @@ class ProductSerializer < ActiveModel::Serializer
   attribute :category_id, key: :categoryId
   attribute :category_name, key: :categoryName
   attribute :display_currency, key: :displayCurrency
+  attribute :p_identifier, key: :identifier
 
   def display_name
     object.name
