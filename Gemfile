@@ -24,6 +24,7 @@ gem 'swagger-blocks'
 gem 'turbolinks', '~> 5'
 gem 'tzinfo-data', platforms: %i(mingw mswin x64_mingw jruby)
 gem 'uglifier', '>= 1.3.0'
+gem 'webdack-uuid_migration', '~> 1.2.0'
 gem 'webpacker', '>= 4.0.x'
 
 group :development, :test do
