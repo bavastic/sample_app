@@ -7,6 +7,7 @@ AllCops:
     - '**/vendor/**/*'
     - '**/vendor/**/.*'
     - 'node_modules/**/*'
+    - 'lib/has_unique_identifier/**/*'
 
 Bundler/OrderedGems:
   TreatCommentsAsGroupSeparators: true
