@@ -16,7 +16,7 @@ RSpec.describe 'GetListCategory', class: CategoriesController do
     let(:service_class) { CategoryService }
 
     before do
-      all_categories.each { |category| create_list(:product, products_count, category: category)}
+      all_categories.each { |category| create_list(:product, products_count, category: category) }
     end
 
     context 'without params' do

@@ -32,7 +32,7 @@ unless Rails.env.test?
         category: category,
         name: Faker::Commerce.unique.product_name,
         price: Faker::Commerce.price,
-        display_currency: Random.rand(0...2) > 0 ? 'EUR' : 'USD'
+        display_currency: Random.rand(0...2).positive? ? 'EUR' : 'USD'
       )
     end
   end

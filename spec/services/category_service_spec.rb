@@ -37,7 +37,7 @@ RSpec.describe CategoryService do
       it { expect(execute.collection.map(&:id)).to match_array(paginated_ids) }
       it { expect(execute.total_count).to be categories_count }
       it { expect(execute.limit_value).to be page_size }
-      it { expect(execute.total_pages).to be (categories_count / page_size) }
+      it { expect(execute.total_pages).to be((categories_count / page_size)) }
       it { expect(execute.current_page).to be current_page }
     end
 
@@ -143,7 +143,7 @@ RSpec.describe CategoryService do
       let(:category_attr) { attributes_for(:category) }
 
       it 'touch updated date' do
-        expect { execute }.to(change { category.reload.updated_at } )
+        expect { execute }.to(change { category.reload.updated_at })
       end
 
       it 'changes attributes' do
@@ -157,7 +157,7 @@ RSpec.describe CategoryService do
     end
 
     context 'invalid category attr' do
-      let(:category_attr) { attributes_for(:category).transform_values {|_v| '' } }
+      let(:category_attr) { attributes_for(:category).transform_values { |_v| '' } }
 
       it { expect { execute }.to raise_error(ActiveRecord::RecordInvalid) }
     end
@@ -191,7 +191,7 @@ RSpec.describe CategoryService do
   describe '#categories_count' do
     let(:execute) { subject.categories_count }
     let(:categories_count) { 10 }
-    let!(:categories) { create_list(:category, categories_count)}
+    let!(:categories) { create_list(:category, categories_count) }
 
     it { expect(execute).to be categories_count }
   end

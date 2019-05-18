@@ -13,14 +13,14 @@
 #
 
 class Category < ApplicationRecord
-  belongs_to :parent, class_name: 'Category', required: false
-  has_many :children, class_name: 'Category', foreign_key: :parent_id, dependent: :destroy
+  belongs_to :parent, class_name: 'Category', optional: true
+  has_many :children, class_name: 'Category', foreign_key: :parent_id, inverse_of: :parent, dependent: :destroy
   has_many :products, dependent: :destroy
 
   validates :name, presence: true
   validate :parent_relation
 
-  scope :search_by_name, ->(name) { where("name ILIKE ?", "%#{name}%") }
+  scope :search_by_name, ->(name) { where('name ILIKE ?', "%#{name}%") }
 
   def self.search_by(query:)
     search_by_name(query)

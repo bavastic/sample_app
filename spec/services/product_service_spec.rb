@@ -38,7 +38,7 @@ RSpec.describe ProductService do
       it { expect(execute.collection.map(&:id)).to match_array(paginated_ids) }
       it { expect(execute.total_count).to be products_count }
       it { expect(execute.limit_value).to be page_size }
-      it { expect(execute.total_pages).to be (products_count / page_size) }
+      it { expect(execute.total_pages).to be((products_count / page_size)) }
       it { expect(execute.current_page).to be current_page }
     end
 
@@ -144,7 +144,7 @@ RSpec.describe ProductService do
       let(:product_attr) { attributes_for(:product, category: category) }
 
       it 'touch updated date' do
-        expect { execute }.to(change { product.reload.updated_at } )
+        expect { execute }.to(change { product.reload.updated_at })
       end
 
       it 'changes attributes' do
@@ -159,7 +159,7 @@ RSpec.describe ProductService do
     end
 
     context 'invalid product attr' do
-      let(:product_attr) { attributes_for(:product).transform_values {|_v| '' } }
+      let(:product_attr) { attributes_for(:product).transform_values { |_v| '' } }
 
       it { expect { execute }.to raise_error(ActiveRecord::RecordInvalid) }
     end
@@ -193,7 +193,7 @@ RSpec.describe ProductService do
   describe '#products_count' do
     let(:execute) { subject.products_count }
     let(:products_count) { 10 }
-    let!(:products) { create_list(:product, products_count, category: category)}
+    let!(:products) { create_list(:product, products_count, category: category) }
 
     it { expect(execute).to be products_count }
   end

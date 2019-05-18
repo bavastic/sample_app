@@ -42,7 +42,7 @@ RSpec.describe 'UpdateCategory', class: CategoriesController do
           name: category_params[:category][:name],
           parentId: category_parent_new.id,
           parentName: category_parent_new.name,
-          productsCount: nil
+          productsCount: 0
         }
       end
 
@@ -58,8 +58,8 @@ RSpec.describe 'UpdateCategory', class: CategoriesController do
         expect(json[:displayName]).to_not be_blank
       end
 
-      it { expect { execute }.to change { category.reload.name } }
-      it { expect { execute }.to change { category.reload.parent_id } }
+      it { expect { execute }.to(change { category.reload.name }) }
+      it { expect { execute }.to(change { category.reload.parent_id }) }
       it { expect { execute }.to_not(change { category.reload.id }) }
     end
 

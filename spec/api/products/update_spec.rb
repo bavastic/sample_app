@@ -47,8 +47,8 @@ RSpec.describe 'UpdateProduct', class: ProductsController do
           categoryId: category_new.id,
           categoryName: category_new.name,
           price: product_params[:product][:price],
-          currency:  product_params[:product][:currency],
-          displayCurrency:  product_params[:product][:displayCurrency]
+          currency: product_params[:product][:currency],
+          displayCurrency: product_params[:product][:displayCurrency]
         }
       end
 
@@ -63,11 +63,11 @@ RSpec.describe 'UpdateProduct', class: ProductsController do
         expect(json[:id]).to_not be_blank
       end
 
-      it { expect { execute }.to change { product.reload.name } }
-      it { expect { execute }.to change { product.reload.category_id } }
-      it { expect { execute }.to change { product.reload.price } }
-      it { expect { execute }.to change { product.reload.currency } }
-      it { expect { execute }.to change { product.reload.display_currency } }
+      it { expect { execute }.to(change { product.reload.name }) }
+      it { expect { execute }.to(change { product.reload.category_id }) }
+      it { expect { execute }.to(change { product.reload.price }) }
+      it { expect { execute }.to(change { product.reload.currency }) }
+      it { expect { execute }.to(change { product.reload.display_currency }) }
       it { expect { execute }.to_not(change { product.reload.id }) }
     end
 

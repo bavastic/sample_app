@@ -1,4 +1,8 @@
+# frozen_string_literal: true
+
 module ApiSwagger
+  # rubocop:disable Metrics/BlockLength
+  # rubocop:disable Metrics/ClassLength
   class CategoriesController
     include Swagger::Blocks
 
@@ -263,4 +267,6 @@ module ApiSwagger
       end
     end
   end
+  # rubocop:enable Metrics/ClassLength
+  # rubocop:enable Metrics/BlockLength
 end

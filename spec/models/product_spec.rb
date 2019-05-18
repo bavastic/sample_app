@@ -14,7 +14,6 @@
 #  updated_at       :datetime         not null
 #
 
-
 require 'rails_helper'
 
 RSpec.describe Product do
@@ -46,7 +45,7 @@ RSpec.describe Product do
       let!(:model) { create(:product, price: nil) }
 
       it 'fills out the default value' do
-        expect(model).to have_attributes({ price: 0.0 })
+        expect(model).to have_attributes(price: 0.0)
       end
     end
   end

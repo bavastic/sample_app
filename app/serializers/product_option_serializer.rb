@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class ProductOptionSerializer < ActiveModel::Serializer
   include Swagger::Blocks
 

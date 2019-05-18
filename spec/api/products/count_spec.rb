@@ -15,7 +15,7 @@ RSpec.describe 'CountProduct', class: ProductsController do
       before { execute }
 
       it { expect(response.status).to eq(200) }
-      it { expect(json).to eq({ count: products_count }) }
+      it { expect(json).to eq(count: products_count) }
     end
 
     context 'check the service interface' do

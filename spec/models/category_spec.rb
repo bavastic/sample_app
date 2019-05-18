@@ -12,7 +12,6 @@
 #  updated_at     :datetime         not null
 #
 
-
 require 'rails_helper'
 
 RSpec.describe Category do
@@ -37,7 +36,6 @@ RSpec.describe Category do
       let!(:model) { create(:category) }
 
       it 'raise the validation error' do
-
         expect { model.update!(parent: model) }.to raise_error(ActiveRecord::RecordInvalid)
       end
     end

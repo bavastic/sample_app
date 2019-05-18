@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class CategoryOptionSerializer < ActiveModel::Serializer
   include Swagger::Blocks
 

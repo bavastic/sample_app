@@ -4,8 +4,8 @@ class ProductService
   include Concerns::Paginateable
   include Concerns::Sortable
 
-  CREATE_ATTR = %i(name category_id price currency display_currency)
-  UPDATE_ATTR = %i(name category_id price currency display_currency)
+  CREATE_ATTR = %i(name category_id price currency display_currency).freeze
+  UPDATE_ATTR = %i(name category_id price currency display_currency).freeze
 
   def fetch!(search: '', sort: {}, pagination: {})
     records = scoped_products.includes(:category).search_by(query: search)

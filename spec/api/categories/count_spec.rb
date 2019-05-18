@@ -14,7 +14,7 @@ RSpec.describe 'CountCategory', class: CategoriesController do
       before { execute }
 
       it { expect(response.status).to eq(200) }
-      it { expect(json).to eq({ count: categories_count }) }
+      it { expect(json).to eq(count: categories_count) }
     end
 
     context 'check the service interface' do

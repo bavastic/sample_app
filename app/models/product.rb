@@ -21,7 +21,7 @@ class Product < ApplicationRecord
 
   before_save :default_values
 
-  scope :search_by_name, ->(name) { where("name ILIKE ?", "%#{name}%") }
+  scope :search_by_name, ->(name) { where('name ILIKE ?', "%#{name}%") }
 
   def self.search_by(query:)
     search_by_name(query)

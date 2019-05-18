@@ -36,8 +36,8 @@ RSpec.describe 'CreateProduct', class: ProductsController do
           categoryId: category.id,
           categoryName: category.name,
           price: product_params[:product][:price],
-          currency:  product_params[:product][:currency],
-          displayCurrency:  product_params[:product][:displayCurrency]
+          currency: product_params[:product][:currency],
+          displayCurrency: product_params[:product][:displayCurrency]
         }
       end
 

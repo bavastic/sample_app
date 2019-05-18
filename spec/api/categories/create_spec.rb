@@ -31,7 +31,7 @@ RSpec.describe 'CreateCategory', class: CategoriesController do
           name: category_params[:category][:name],
           parentId: category_parent.id,
           parentName: category_parent.name,
-          productsCount: nil
+          productsCount: 0
         }
       end
 

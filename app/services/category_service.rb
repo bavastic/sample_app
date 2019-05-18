@@ -4,8 +4,8 @@ class CategoryService
   include Concerns::Paginateable
   include Concerns::Sortable
 
-  CREATE_ATTR = %i(name parent_id)
-  UPDATE_ATTR = %i(name parent_id)
+  CREATE_ATTR = %i(name parent_id).freeze
+  UPDATE_ATTR = %i(name parent_id).freeze
 
   def fetch!(search: '', sort: {}, pagination: {})
     records = scoped_categories.includes(:parent).search_by(query: search)
