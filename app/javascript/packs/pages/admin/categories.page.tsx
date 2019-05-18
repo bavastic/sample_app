@@ -87,6 +87,7 @@ class CategoriesAdminPage extends React.Component<Properties> {
       return (
         <List bulleted>
           <List.Item>Name: <i>{category.name}</i></List.Item>
+          <List.Item>Identifier: <i>{category.identifier}</i></List.Item>
         </List>
       );
     }
@@ -96,6 +97,7 @@ class CategoriesAdminPage extends React.Component<Properties> {
         <List.Item>Parent: <i>{category.parentName} (#{category.parentId})</i></List.Item>
         <List.Item>Name: <i>{category.name}  (#{category.id})</i></List.Item>
         <List.Item>#Products: <i>{category.productsCount || 0}</i></List.Item>
+        <List.Item>Identifier: <i>{category.identifier}</i></List.Item>
       </List>
     );
   };
