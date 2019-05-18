@@ -1,4 +1,4 @@
-
+# frozen_string_literal: true
 require 'webdack/uuid_migration/helpers'
 
 class MigrateToUuid < ActiveRecord::Migration[5.2]

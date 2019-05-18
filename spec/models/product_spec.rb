@@ -31,7 +31,7 @@ RSpec.describe Product do
       end
 
       it 'setups the identifier' do
-        expect { model.save }.to change { model.p_identifier }.from(nil).to(/\A\w{3}\/\w{3}\z/)
+        expect { model.save }.to change { model.p_identifier }.from(nil).to(%r{\A\w{3}/\w{3}\z})
       end
 
       it 'it doesnt rewrite the identifier' do
