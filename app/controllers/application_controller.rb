@@ -11,7 +11,7 @@ class ApplicationController < ActionController::Base
   rescue_from ActiveRecord::RecordInvalid do
     render_error(
       message: "#{error_target}!",
-      status: :not_acceptable
+      status: :unprocessable_entity
     )
   end
 
