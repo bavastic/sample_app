@@ -9,7 +9,7 @@ interface Category extends Record {
   parentName: string;
   name: string;
   productsCount: number;
-  gIdentifier: string;
+  identifier: string;
 }
 
 export default Category;
