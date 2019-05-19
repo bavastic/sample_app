@@ -4,14 +4,15 @@
 #
 # Table name: products
 #
-#  id               :bigint           not null, primary key
-#  category_id      :bigint
+#  id               :uuid             not null, primary key
+#  category_id      :uuid
 #  name             :string           not null
 #  price            :decimal(, )
 #  currency         :string           default("EUR")
 #  display_currency :string           default("EUR")
 #  created_at       :datetime         not null
 #  updated_at       :datetime         not null
+#  p_identifier     :string
 #
 
 FactoryBot.define do

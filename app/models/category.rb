@@ -4,12 +4,13 @@
 #
 # Table name: categories
 #
-#  id             :bigint           not null, primary key
-#  parent_id      :bigint
+#  id             :uuid             not null, primary key
+#  parent_id      :uuid
 #  name           :string           not null
-#  products_count :integer
+#  products_count :integer          default(0)
 #  created_at     :datetime         not null
 #  updated_at     :datetime         not null
+#  g_identifier   :string
 #
 
 class Category < ApplicationRecord
