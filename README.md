@@ -16,16 +16,29 @@ The frontend is built on React JS and Semantic UI.
 
 # SYSTEM ARCHITECTURE
 
-* Provides JS console logger service during development
+## Frontend (JavaScript)
+
+* Provides JS console logger service during development.
 * Implements a generic store inspired by Rails.
 * Distinguishes between UI and domain stores.
 * Uses `axios` as transport layer to consume Rails REST API.
-* Implements a simple own routing service to switch between model modules
+* Implements a simple own routing service to switch between model modules.
 * Uses higher order components to push domain data from store into UI components.
 * UI components are stateless and have bo access to stores.
-* Uses modal dialogs for CRUD features
+* Uses modal dialogs for CRUD features.
 * Built on Semantic UI React.
 * Provides notification service to show basic flash messages from Rails backend.
+
+## Backend (Ruby on Rails)
+
+* REST API is based on Rails Controllers.
+* Serialization to JSON format is done by `active_model_serializers` library.
+* The interaction with Core is done through the Service layer `app/services`.
+* Uses `kaminari` for pagination.
+* Uses local gem `has_unique_identifier` to set up the identifiers on models.
+* Uses uuid based on `pgcrypto` extension and `gen_random_uuid()` sequence algorithm for primary keys.
+* Uses `strong_migrations` to validate migrations.
+* The API documentation is presented in `app/docs/api_swagger/`
 
 # LIVE DEMO
 
@@ -57,14 +70,32 @@ To build a production database you can use:
 
 ```
 export RAILS_ENV=production
-rake db:setup 
+rake db:setup
 ```
 
 
 To run the tests just enter this command:
 
 ```
-rake test
+rake rspec
+```
+
+To run the tests with test coverage report (coverage/index.html):
+
+```
+COVERAGE=simplecov bundle exec rspec
+```
+
+To run Rubocop to check code style:
+
+```
+bundle exec rubocop
+```
+
+To run Rubocop with autocorrect flag:
+
+```
+bundle exec rubocop -a
 ```
 
 For development you need to run the backend and frontend services:
@@ -83,3 +114,12 @@ rails s
 ```
 
 Open your browser and visit `http://localhost:3000/pages/index` to see the Semantic UI frontend.
+
+# CONTRIBUTION
+
+1. Fork it
+2. Create your feature branch (`git checkout -b my-new-feature`)
+3. Run test and Rubocop checks
+4. Commit your changes (`git commit -am 'Add some feature'`)
+5. Push to the branch (`git push origin my-new-feature`)
+6. Create new Pull Request
