@@ -35,7 +35,7 @@ module ApiSwagger
     swagger_path '/categories' do
       operation :get do
         key :summary, 'Fetch all categories'
-        key :description, 'Returns all categories, includes support for pagination and basic fulltext search'
+        key :description, 'Returns all categories, includes support for pagination and basic substring search'
         key :operationId, 'findCategories'
 
         key :tags, [

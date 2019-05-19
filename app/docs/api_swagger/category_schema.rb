@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 module ApiSwagger
+  # rubocop:disable Metrics/BlockLength
   class CategorySchema
     include Swagger::Blocks
 
@@ -33,6 +34,11 @@ module ApiSwagger
       property :productsCount do
         key :type, :integer
         key :description, 'counter cache for product records'
+      end
+
+      property :identifier do
+        key :type, :string
+        key :description, 'identifier of the category'
       end
     end
 
@@ -78,4 +84,5 @@ module ApiSwagger
       end
     end
   end
+  # rubocop:enable Metrics/BlockLength
 end
