@@ -24,6 +24,7 @@ coverage
 node_modules
 public/assets
 yarn.lock
+public/packs/
 
 .overcommit.yml
 .DS_Store
