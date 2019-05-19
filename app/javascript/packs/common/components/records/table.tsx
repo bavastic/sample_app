@@ -53,8 +53,8 @@ interface RecordTableCellProps extends ActionHandlers {
 }
 
 const rightLabelStyle = {
-  float: 'right';
-}
+  float: 'right'
+};
 
 const RecordTableCell = (props: RecordTableCellProps): JSX.Element => {
   return (
