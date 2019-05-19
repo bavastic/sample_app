@@ -4,6 +4,8 @@ require 'rails_helper'
 RSpec.describe 'UpdateCategory', class: CategoriesController do
   include ApiJsonSupport
 
+  let(:service_class) { CategoryService }
+
   describe 'PUT api/categories' do
     let(:path) { "/api/categories/#{category_id}" }
     let(:execute) { put path, params: category_params }
@@ -11,6 +13,7 @@ RSpec.describe 'UpdateCategory', class: CategoriesController do
     let(:category_parent) { create(:category) }
     let(:category_parent_new) { create(:category) }
     let(:category_id) { category.id }
+    let(:service_method) { :update! }
 
     let(:category_params) do
       {
@@ -74,13 +77,70 @@ RSpec.describe 'UpdateCategory', class: CategoriesController do
       end
 
       it 'is called with params' do
-        expect(CategoryService).to receive(:new).and_return(service)
+        expect(service_class).to receive(:new).and_return(service)
 
         expect(service).to(
-          receive(:update!).with(category_id: category.id.to_s, category_attr: category_attr).and_return(category)
+          receive(service_method).with(category_id: category.id.to_s, category_attr: category_attr).and_return(category)
         )
 
         execute
+      end
+    end
+
+    context 'internal error' do
+      let(:error) do
+        {
+          notification: {
+            level: 'error',
+            message: 'Cannot update category: unknown error!'
+          }
+        }
+      end
+
+      it 'renders error' do
+        expect_any_instance_of(service_class).to(receive(service_method).and_raise(Exception))
+
+        execute
+        expect(response.status).to be 500
+        expect(json).to eq(error)
+      end
+    end
+
+    context 'record not found' do
+      let(:error) do
+        {
+          notification: {
+            level: 'error',
+            message: 'Cannot update category: record not found!'
+          }
+        }
+      end
+
+      it 'renders error' do
+        expect_any_instance_of(service_class).to(receive(service_method).and_raise(ActiveRecord::RecordNotFound))
+
+        execute
+        expect(response.status).to be 404
+        expect(json).to eq(error)
+      end
+    end
+
+    context 'record invalid' do
+      let(:error) do
+        {
+          notification: {
+            level: 'error',
+            message: 'Cannot update category!'
+          }
+        }
+      end
+
+      it 'renders error' do
+        expect_any_instance_of(service_class).to(receive(service_method).and_raise(ActiveRecord::RecordInvalid))
+
+        execute
+        expect(response.status).to be 422
+        expect(json).to eq(error)
       end
     end
   end

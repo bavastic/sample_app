@@ -4,6 +4,8 @@ require 'rails_helper'
 RSpec.describe 'GetListCategory', class: CategoriesController do
   include ApiJsonSupport
 
+  let(:service_class) { CategoryService }
+
   describe 'GET api/categories' do
     let(:path) { '/api/categories' }
     let(:execute) { get path, params: fetch_params }
@@ -13,7 +15,7 @@ RSpec.describe 'GetListCategory', class: CategoriesController do
     let(:all_categories) { [category_parent] + categories }
     let(:products_count) { 2 }
     let(:fetch_params) { {} }
-    let(:service_class) { CategoryService }
+    let(:service_method) { :fetch! }
 
     before do
       all_categories.each { |category| create_list(:product, products_count, category: category) }
@@ -72,10 +74,67 @@ RSpec.describe 'GetListCategory', class: CategoriesController do
         expect(service_class).to receive(:new).and_return(service)
 
         expect(service).to(
-          receive(:fetch!).with(fetch_attr).and_return(pagination_value_object)
+          receive(service_method).with(fetch_attr).and_return(pagination_value_object)
         )
 
         execute
+      end
+    end
+
+    context 'internal error' do
+      let(:error) do
+        {
+          notification: {
+            level: 'error',
+            message: 'Cannot list categories: unknown error!'
+          }
+        }
+      end
+
+      it 'renders error' do
+        expect_any_instance_of(service_class).to(receive(service_method).and_raise(Exception))
+
+        execute
+        expect(response.status).to be 500
+        expect(json).to eq(error)
+      end
+    end
+
+    context 'record not found' do
+      let(:error) do
+        {
+          notification: {
+            level: 'error',
+            message: 'Cannot list categories: record not found!'
+          }
+        }
+      end
+
+      it 'renders error' do
+        expect_any_instance_of(service_class).to(receive(service_method).and_raise(ActiveRecord::RecordNotFound))
+
+        execute
+        expect(response.status).to be 404
+        expect(json).to eq(error)
+      end
+    end
+
+    context 'record invalid' do
+      let(:error) do
+        {
+          notification: {
+            level: 'error',
+            message: 'Cannot list categories!'
+          }
+        }
+      end
+
+      it 'renders error' do
+        expect_any_instance_of(service_class).to(receive(service_method).and_raise(ActiveRecord::RecordInvalid))
+
+        execute
+        expect(response.status).to be 422
+        expect(json).to eq(error)
       end
     end
   end

@@ -4,12 +4,14 @@ require 'rails_helper'
 RSpec.describe 'OptionsCategory', class: CategoriesController do
   include ApiJsonSupport
 
+  let(:service_class) { CategoryService }
+
   describe 'GET api/categories/options' do
     let(:path) { '/api/categories/options' }
     let(:execute) { get path }
     let(:categories_count) { 10 }
     let!(:categories) { create_list(:category, categories_count) }
-    let(:service_class) { CategoryService }
+    let(:service_method) { :fetch! }
 
     context 'without params' do
       before { execute }
@@ -38,10 +40,67 @@ RSpec.describe 'OptionsCategory', class: CategoriesController do
         expect(service_class).to receive(:new).and_return(service)
 
         expect(service).to(
-          receive(:fetch!).with(sort: { name: :asc }).and_return(categories)
+          receive(service_method).with(sort: { name: :asc }).and_return(categories)
         )
 
         execute
+      end
+    end
+
+    context 'internal error' do
+      let(:error) do
+        {
+          notification: {
+            level: 'error',
+            message: 'Cannot fetch categories: unknown error!'
+          }
+        }
+      end
+
+      it 'renders error' do
+        expect_any_instance_of(service_class).to(receive(service_method).and_raise(Exception))
+
+        execute
+        expect(response.status).to be 500
+        expect(json).to eq(error)
+      end
+    end
+
+    context 'record not found' do
+      let(:error) do
+        {
+          notification: {
+            level: 'error',
+            message: 'Cannot fetch categories: record not found!'
+          }
+        }
+      end
+
+      it 'renders error' do
+        expect_any_instance_of(service_class).to(receive(service_method).and_raise(ActiveRecord::RecordNotFound))
+
+        execute
+        expect(response.status).to be 404
+        expect(json).to eq(error)
+      end
+    end
+
+    context 'record invalid' do
+      let(:error) do
+        {
+          notification: {
+            level: 'error',
+            message: 'Cannot fetch categories!'
+          }
+        }
+      end
+
+      it 'renders error' do
+        expect_any_instance_of(service_class).to(receive(service_method).and_raise(ActiveRecord::RecordInvalid))
+
+        execute
+        expect(response.status).to be 422
+        expect(json).to eq(error)
       end
     end
   end

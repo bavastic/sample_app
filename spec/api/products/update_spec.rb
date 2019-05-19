@@ -4,6 +4,8 @@ require 'rails_helper'
 RSpec.describe 'UpdateProduct', class: ProductsController do
   include ApiJsonSupport
 
+  let(:service_class) { ProductService }
+
   describe 'PUT api/products' do
     let(:path) { "/api/products/#{product_id}" }
     let(:execute) { put path, params: product_params }
@@ -11,6 +13,7 @@ RSpec.describe 'UpdateProduct', class: ProductsController do
     let(:product) { create(:product, category: category) }
     let(:category_new) { create(:category) }
     let(:product_id) { product.id }
+    let(:service_method) { :update! }
 
     let(:product_params) do
       {
@@ -85,13 +88,70 @@ RSpec.describe 'UpdateProduct', class: ProductsController do
       end
 
       it 'is called with params' do
-        expect(ProductService).to receive(:new).and_return(service)
+        expect(service_class).to receive(:new).and_return(service)
 
         expect(service).to(
-          receive(:update!).with(product_id: product.id.to_s, product_attr: product_attr).and_return(product)
+          receive(service_method).with(product_id: product.id.to_s, product_attr: product_attr).and_return(product)
         )
 
         execute
+      end
+    end
+
+    context 'internal error' do
+      let(:error) do
+        {
+          notification: {
+            level: 'error',
+            message: 'Cannot update product: unknown error!'
+          }
+        }
+      end
+
+      it 'renders error' do
+        expect_any_instance_of(service_class).to(receive(service_method).and_raise(Exception))
+
+        execute
+        expect(response.status).to be 500
+        expect(json).to eq(error)
+      end
+    end
+
+    context 'record not found' do
+      let(:error) do
+        {
+          notification: {
+            level: 'error',
+            message: 'Cannot update product: record not found!'
+          }
+        }
+      end
+
+      it 'renders error' do
+        expect_any_instance_of(service_class).to(receive(service_method).and_raise(ActiveRecord::RecordNotFound))
+
+        execute
+        expect(response.status).to be 404
+        expect(json).to eq(error)
+      end
+    end
+
+    context 'record invalid' do
+      let(:error) do
+        {
+          notification: {
+            level: 'error',
+            message: 'Cannot update product!'
+          }
+        }
+      end
+
+      it 'renders error' do
+        expect_any_instance_of(service_class).to(receive(service_method).and_raise(ActiveRecord::RecordInvalid))
+
+        execute
+        expect(response.status).to be 422
+        expect(json).to eq(error)
       end
     end
   end

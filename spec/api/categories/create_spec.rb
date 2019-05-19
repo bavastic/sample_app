@@ -4,10 +4,13 @@ require 'rails_helper'
 RSpec.describe 'CreateCategory', class: CategoriesController do
   include ApiJsonSupport
 
+  let(:service_class) { CategoryService }
+
   describe 'POST api/categories' do
     let(:path) { '/api/categories' }
     let(:execute) { post path, params: category_params }
     let(:category_parent) { create(:category) }
+    let(:service_method) { :create! }
 
     let(:category_params) do
       {
@@ -58,13 +61,70 @@ RSpec.describe 'CreateCategory', class: CategoriesController do
       end
 
       it 'is called with params' do
-        expect(CategoryService).to receive(:new).and_return(service)
+        expect(service_class).to receive(:new).and_return(service)
 
         expect(service).to(
-          receive(:create!).with(category_attr: category_attr).and_return(category)
+          receive(service_method).with(category_attr: category_attr).and_return(category)
         )
 
         execute
+      end
+    end
+
+    context 'internal error' do
+      let(:error) do
+        {
+          notification: {
+            level: 'error',
+            message: 'Cannot create category: unknown error!'
+          }
+        }
+      end
+
+      it 'renders error' do
+        expect_any_instance_of(service_class).to(receive(service_method).and_raise(Exception))
+
+        execute
+        expect(response.status).to be 500
+        expect(json).to eq(error)
+      end
+    end
+
+    context 'record not found' do
+      let(:error) do
+        {
+          notification: {
+            level: 'error',
+            message: 'Cannot create category: record not found!'
+          }
+        }
+      end
+
+      it 'renders error' do
+        expect_any_instance_of(service_class).to(receive(service_method).and_raise(ActiveRecord::RecordNotFound))
+
+        execute
+        expect(response.status).to be 404
+        expect(json).to eq(error)
+      end
+    end
+
+    context 'record invalid' do
+      let(:error) do
+        {
+          notification: {
+            level: 'error',
+            message: 'Cannot create category!'
+          }
+        }
+      end
+
+      it 'renders error' do
+        expect_any_instance_of(service_class).to(receive(service_method).and_raise(ActiveRecord::RecordInvalid))
+
+        execute
+        expect(response.status).to be 422
+        expect(json).to eq(error)
       end
     end
   end

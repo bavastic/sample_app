@@ -4,10 +4,13 @@ require 'rails_helper'
 RSpec.describe 'CreateProduct', class: ProductsController do
   include ApiJsonSupport
 
+  let(:service_class) { ProductService }
+
   describe 'POST api/products' do
     let(:path) { '/api/products' }
     let(:execute) { post path, params: product_params }
     let!(:category) { create(:category) }
+    let(:service_method) { :create! }
 
     let(:product_params) do
       {
@@ -66,13 +69,70 @@ RSpec.describe 'CreateProduct', class: ProductsController do
       end
 
       it 'is called with params' do
-        expect(ProductService).to receive(:new).and_return(service)
+        expect(service_class).to receive(:new).and_return(service)
 
         expect(service).to(
-          receive(:create!).with(product_attr: product_attr).and_return(product)
+          receive(service_method).with(product_attr: product_attr).and_return(product)
         )
 
         execute
+      end
+    end
+
+    context 'internal error' do
+      let(:error) do
+        {
+          notification: {
+            level: 'error',
+            message: 'Cannot create product: unknown error!'
+          }
+        }
+      end
+
+      it 'renders error' do
+        expect_any_instance_of(service_class).to(receive(service_method).and_raise(Exception))
+
+        execute
+        expect(response.status).to be 500
+        expect(json).to eq(error)
+      end
+    end
+
+    context 'record not found' do
+      let(:error) do
+        {
+          notification: {
+            level: 'error',
+            message: 'Cannot create product: record not found!'
+          }
+        }
+      end
+
+      it 'renders error' do
+        expect_any_instance_of(service_class).to(receive(service_method).and_raise(ActiveRecord::RecordNotFound))
+
+        execute
+        expect(response.status).to be 404
+        expect(json).to eq(error)
+      end
+    end
+
+    context 'record invalid' do
+      let(:error) do
+        {
+          notification: {
+            level: 'error',
+            message: 'Cannot create product!'
+          }
+        }
+      end
+
+      it 'renders error' do
+        expect_any_instance_of(service_class).to(receive(service_method).and_raise(ActiveRecord::RecordInvalid))
+
+        execute
+        expect(response.status).to be 422
+        expect(json).to eq(error)
       end
     end
   end

@@ -4,6 +4,8 @@ require 'rails_helper'
 RSpec.describe 'GetListProduct', class: ProductsController do
   include ApiJsonSupport
 
+  let(:service_class) { ProductService }
+
   describe 'GET api/products' do
     let(:path) { '/api/products' }
     let(:execute) { get path, params: fetch_params }
@@ -12,7 +14,7 @@ RSpec.describe 'GetListProduct', class: ProductsController do
     let!(:products) { create_list(:product, products_count, category: category) }
     let(:products_count) { 2 }
     let(:fetch_params) { {} }
-    let(:service_class) { ProductService }
+    let(:service_method) { :fetch! }
 
     context 'without params' do
       before { execute }
@@ -63,10 +65,67 @@ RSpec.describe 'GetListProduct', class: ProductsController do
         expect(service_class).to receive(:new).and_return(service)
 
         expect(service).to(
-          receive(:fetch!).with(fetch_attr).and_return(pagination_value_object)
+          receive(service_method).with(fetch_attr).and_return(pagination_value_object)
         )
 
         execute
+      end
+    end
+
+    context 'internal error' do
+      let(:error) do
+        {
+          notification: {
+            level: 'error',
+            message: 'Cannot list products: unknown error!'
+          }
+        }
+      end
+
+      it 'renders error' do
+        expect_any_instance_of(service_class).to(receive(service_method).and_raise(Exception))
+
+        execute
+        expect(response.status).to be 500
+        expect(json).to eq(error)
+      end
+    end
+
+    context 'record not found' do
+      let(:error) do
+        {
+          notification: {
+            level: 'error',
+            message: 'Cannot list products: record not found!'
+          }
+        }
+      end
+
+      it 'renders error' do
+        expect_any_instance_of(service_class).to(receive(service_method).and_raise(ActiveRecord::RecordNotFound))
+
+        execute
+        expect(response.status).to be 404
+        expect(json).to eq(error)
+      end
+    end
+
+    context 'record invalid' do
+      let(:error) do
+        {
+          notification: {
+            level: 'error',
+            message: 'Cannot list products!'
+          }
+        }
+      end
+
+      it 'renders error' do
+        expect_any_instance_of(service_class).to(receive(service_method).and_raise(ActiveRecord::RecordInvalid))
+
+        execute
+        expect(response.status).to be 422
+        expect(json).to eq(error)
       end
     end
   end
