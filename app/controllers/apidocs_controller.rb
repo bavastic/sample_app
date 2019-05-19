@@ -33,7 +33,7 @@ class ApidocsController < ActionController::Base
     ApiSwagger::CategorySchema,
     ApiSwagger::CategoriesController,
     ApiSwagger::ProductSchema,
-    ApiSwagger::ProductsController
+    ApiSwagger::ProductsController,
     self
   ].freeze
 
