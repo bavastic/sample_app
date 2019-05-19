@@ -17,17 +17,16 @@
 # See http://rubydoc.info/gems/rspec-core/RSpec/Core/Configuration
 
 require 'simplecov'
-
 SimpleCov.formatters = [SimpleCov::Formatter::HTMLFormatter]
 
-if ENV['COVERAGE'] # || ENV['JENKINS_HOME']
-  # coverage info cannot be read from the jenkins server because of content-securty-policy; see: https://github.com/colszowka/simplecov-html/issues/50
-  SimpleCov.start :rails do
+if ENV['COVERAGE'] == 'simplecov'
+  SimpleCov.start 'rails' do
+    add_group 'Services', %w(app/services)
   end
+else
+  require 'coveralls'
+  Coveralls.wear!
 end
-
-require 'coveralls'
-Coveralls.wear!
 
 RSpec.configure do |config|
   # rspec-expectations config goes here. You can use an alternate
