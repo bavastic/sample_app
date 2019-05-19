@@ -36,12 +36,12 @@ group :development, :test do
   gem 'pry-rails'
   gem 'rspec-rails'
   gem 'shoulda-matchers'
+  gem 'simplecov', '~> 0.16.0', require: false
 end
 
 group :development do
   gem 'listen', '>= 3.0.5', '< 3.2'
   gem 'rubocop', '0.68.1', require: false
-  gem 'simplecov', '~> 0.16.0', require: false
   gem 'spring'
   gem 'spring-watcher-listen', '~> 2.0.0'
   gem 'web-console', '>= 3.3.0'
