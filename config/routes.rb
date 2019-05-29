@@ -1,16 +1,24 @@
+# frozen_string_literal: true
+
 Rails.application.routes.draw do
   resources :apidocs, only: [:index]
 
-  get 'pages/index'
+  resources :pages, only: [:index]
 
   scope '/api' do
-    match 'products/options' => 'products#options', :via => :get, :as => :products_options
-    match 'products/count' => 'products#count', :via => :get, :as => :products_count
-    resources :products
+    resources :products do
+      collection do
+        get :options
+        get :count
+      end
+    end
 
-    match 'categories/options' => 'categories#options', :via => :get, :as => :categories_options
-    match 'categories/count' => 'categories#count', :via => :get, :as => :categories_count
-    resources :categories
+    resources :categories do
+      collection do
+        get :options
+        get :count
+      end
+    end
   end
 
   root to: 'pages#index'

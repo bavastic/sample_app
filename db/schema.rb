@@ -10,31 +10,37 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018112102) do
+ActiveRecord::Schema.define(version: 2019_05_18_172230) do
 
   # These are extensions that must be enabled in order to support this database
+  enable_extension "pgcrypto"
   enable_extension "plpgsql"
 
-  create_table "categories", force: :cascade do |t|
-    t.bigint "parent_id"
-    t.string "name"
-    t.integer "products_count"
+  create_table "categories", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "parent_id"
+    t.string "name", null: false
+    t.integer "products_count", default: 0
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "g_identifier"
+    t.index ["g_identifier"], name: "index_categories_on_g_identifier", unique: true
     t.index ["name"], name: "index_categories_on_name", unique: true
     t.index ["parent_id"], name: "index_categories_on_parent_id"
   end
 
-  create_table "products", force: :cascade do |t|
-    t.bigint "category_id"
-    t.string "name"
+  create_table "products", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "category_id"
+    t.string "name", null: false
     t.decimal "price"
     t.string "currency", default: "EUR"
     t.string "display_currency", default: "EUR"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "p_identifier"
     t.index ["category_id"], name: "index_products_on_category_id"
+    t.index ["p_identifier"], name: "index_products_on_p_identifier", unique: true
   end
 
+  add_foreign_key "categories", "categories", column: "parent_id"
   add_foreign_key "products", "categories"
 end

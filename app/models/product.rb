@@ -1,24 +1,38 @@
+# frozen_string_literal: true
+
+# == Schema Information
+#
+# Table name: products
+#
+#  id               :uuid             not null, primary key
+#  category_id      :uuid
+#  name             :string           not null
+#  price            :decimal(, )
+#  currency         :string           default("EUR")
+#  display_currency :string           default("EUR")
+#  created_at       :datetime         not null
+#  updated_at       :datetime         not null
+#  p_identifier     :string
+#
+
 class Product < ApplicationRecord
   belongs_to :category, counter_cache: true
 
   validates :name, presence: true
 
-  alias_attribute :text, :name
-  alias_attribute :value, :id
+  before_save :default_values
 
-  alias_attribute :displayName, :name
-  alias_attribute :categoryId, :category_id
-  alias_attribute :categoryName, :category_name
-  alias_attribute :displayCurrency, :display_currency
+  has_unique_identifier :p_identifier, segment_count: 2, segment_size: 3, delimiter: '/'
 
-  delegate :name, to: :category, prefix: true
+  scope :search_by_name, ->(name) { where('name ILIKE ?', "%#{name}%") }
 
-  def as_json(options = {})
-    super(
-      options.keys.any? ? options : {
-        only: [:id, :name, :currency, :price],
-        methods: [:displayName, :categoryId, :categoryName, :displayCurrency],
-      }
-    )
+  def self.search_by(query:)
+    search_by_name(query)
+  end
+
+  private
+
+  def default_values
+    self.price ||= 0
   end
 end

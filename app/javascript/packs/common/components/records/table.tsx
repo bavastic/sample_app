@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Header, Table, ButtonProps } from 'semantic-ui-react'
+import { Header, Table, ButtonProps, Label } from 'semantic-ui-react'
 
 import Record from '../../../models/record.model';
 
@@ -52,12 +52,17 @@ interface RecordTableCellProps extends ActionHandlers {
   record: Record;
 }
 
+const rightLabelStyle = {
+  float: 'right'
+};
+
 const RecordTableCell = (props: RecordTableCellProps): JSX.Element => {
   return (
     <Table.Row>
       <Table.Cell>
         <Header as='h4'>
           <Header.Content>{props.record.displayName}</Header.Content>
+          <Label style={rightLabelStyle}>{props.record.identifier}</Label>
         </Header>
       </Table.Cell>
 

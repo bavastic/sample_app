@@ -97,6 +97,7 @@ class ProductsAdminPage extends React.Component<Properties> {
         <List.Item>Name: <i>{product.name}</i></List.Item>
         <List.Item>Price: <i>{product.price} {product.currency}</i></List.Item>
         <List.Item>Display Price: <i>{product.displayPrice} {product.displayCurrency}</i></List.Item>
+        <List.Item>Identifier: <i>{product.identifier}</i></List.Item>
       </List>
     );
   };

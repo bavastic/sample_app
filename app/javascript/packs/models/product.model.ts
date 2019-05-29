@@ -12,6 +12,7 @@ interface Product extends Record {
   currency: string;
   displayPrice?: number;
   displayCurrency: string;
+  identifier: string;
 }
 
 export default Product;
