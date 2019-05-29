@@ -1,5 +1,3 @@
-[![Build Status](https://travis-ci.org/atroppmann/shoppu.svg?branch=master)](https://travis-ci.org/atroppmann/shoppu)
-
 # DESCRIPTION
 
 This project is a basic CRUD application based on a Ruby on Rails backend that delivers data as JSON via REST.
@@ -40,13 +38,9 @@ The frontend is built on React JS and Semantic UI.
 * Uses `strong_migrations` to validate migrations.
 * The API documentation is presented in `app/docs/api_swagger/`
 
-# LIVE DEMO
-
-Visit https://shoppu-frontend.herokuapp.com/ to see live demo. As this is a free Heroku account please be patient during spin-up of the virtual server.
-
 # API DOCS
 
-Visit https://shoppu-frontend.herokuapp.com/swagger.html to see REST API documentation build with Swagger.
+Visit /swagger.html to see REST API documentation build with Swagger.
 
 # BUILD PROCESS
 
