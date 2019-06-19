@@ -18,7 +18,8 @@ export enum Action {
   Create = 'create',
   Update = 'update',
   Show = 'show',
-  Destroy = 'destroy'
+  Destroy = 'destroy',
+  Upload = 'upload'
 }
 
 export enum NotificationLevel {

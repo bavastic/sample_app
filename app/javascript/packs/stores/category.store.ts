@@ -1,4 +1,5 @@
 import SimpleStore from './simple.store';
+import axios from 'axios';
 
 import Category from '../models/category.model';
 
@@ -12,6 +13,13 @@ export default class CategoryStore extends SimpleStore<Category> {
 
     this.modelName = 'category';
     this.basePath = '/api/categories';
+  }
+
+  public uploadCategoryFile(file) {
+    console.log(this.basePath+'/upload')
+    this.api.post(this.basePath+'/upload', file).then(res => {
+      console.log(res.statusText)
+    });
   }
 
 }

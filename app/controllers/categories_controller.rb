@@ -41,6 +41,10 @@ class CategoriesController < ApplicationController
     render json: paginated_categories.collection, each_serializer: CategoryOptionSerializer
   end
 
+  def upload
+    render json: {message: 'received'}
+  end
+
   private
 
   def category_attr

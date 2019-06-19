@@ -17,6 +17,7 @@ Rails.application.routes.draw do
       collection do
         get :options
         get :count
+        post :upload
       end
     end
   end
