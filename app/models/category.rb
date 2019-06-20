@@ -29,6 +29,29 @@ class Category < ApplicationRecord
     search_by_name(query)
   end
 
+  # TODO: Reduce Complexity / Split up.
+  def self.batch_create(category_list)
+    begin
+    ActiveRecord::Base.transaction do
+      category_list.each_with_index do |row, i|
+        last_line = i + 2
+        raise "Blank field on line #{last_line}" if row[:name].blank? || row[:parent].blank?
+
+        parent = Category.find_by(name: row[:parent])
+        raise "Unable to find parent category #{row[:parent]} on line #{last_line}" if parent.nil?
+
+        c = Category.new(name: row[:name], parent: parent)
+        raise "Line #{last_line} is invalid: #{c.errors.full_messages.join(',')}" if c.errors.any?
+
+        c.save
+      end
+    end
+    rescue RuntimeError => e
+      return e.message
+  end
+    nil
+  end
+
   def parent_relation
     return unless id.present? && parent_id == id
 

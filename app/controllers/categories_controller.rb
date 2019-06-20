@@ -41,8 +41,17 @@ class CategoriesController < ApplicationController
     render json: paginated_categories.collection, each_serializer: CategoryOptionSerializer
   end
 
+  # TODO: Reduce complexity
   def upload
-    render json: {message: 'received'}
+    error, sheet = helpers.validate_spreadsheet(params[:categoryFile].tempfile, %w(Name Parent), 'Categories')
+    render(json: { message: error }) && return unless error.nil?
+
+    batch_result = Category.batch_create(sheet.parse(name: 'Name', parent: 'Parent'))
+    if batch_result.blank?
+      render(json: { message: 'Imported.' }) && return
+    else
+      render(json: { message: batch_result }) && return
+    end
   end
 
   private
