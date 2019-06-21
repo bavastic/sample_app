@@ -73,8 +73,9 @@ export class CategoryUploadForm extends React.Component<Properties> {
           {({getRootProps, getInputProps}) => (
             <section>
               <div {...getRootProps()}>
-              <p>Click here to select a file or just drag files onto this box.</p>
-              <div className='file_box'></div>
+              <div className='file-box'>
+                <p>Click here to select a file or just drag files onto this box.</p>
+              </div>
               <input {...getInputProps()}/></div>
             </section>
           )}

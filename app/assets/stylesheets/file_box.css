@@ -1,6 +1,15 @@
-div.file_box {
+div.file-box {
   height: 20em;
   width: 100%;
   border: 3px solid green;
   background-color: lightgreen;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+div.file_box p {
+  color: darkgreen;
+  font-size: 16px;
 }
