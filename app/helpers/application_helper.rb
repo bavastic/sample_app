@@ -28,7 +28,7 @@ module ApplicationHelper
 
   def check_columns(sheet, col_names)
     unless sheet.row(1) == col_names
-      return ["The category sheet must contain two columns: #{col_names.join(', ')}",
+      return ["The import sheet must contain these columns: #{col_names.join(', ')}",
               nil]
     end
 

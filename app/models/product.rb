@@ -30,6 +30,37 @@ class Product < ApplicationRecord
     search_by_name(query)
   end
 
+  def self.batch_create(product_list)
+    begin
+      ActiveRecord::Base.transaction do
+        product_list.each_with_index { |row, i| create_from_row(row, i + 2) }
+      end
+    rescue RuntimeError => e
+      return e.message
+    end
+    nil
+  end
+
+  def self.create_from_row(row, number)
+    raise "Blank field on row #{number}" if row.values.any?(&:blank?)
+
+    product = create_from_hash(row, number)
+    product.save
+  end
+
+  def self.create_from_hash(hash, line)
+    category = Category.find_by(name: hash[:category])
+    Rails.logger.info category.inspect
+    raise "Unable to find category #{hash[:category]} on row #{line}" if category.nil?
+    hash[:category] = category # Found category? Put it in the hash.
+
+    product = Product.new(hash)
+    raise "Invalid Data: #{product.errors.full_messages.join(',')} on row #{line}" if product.errors.any?
+
+    product
+  end
+
+
   private
 
   def default_values

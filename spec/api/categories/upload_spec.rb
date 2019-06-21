@@ -14,11 +14,23 @@ describe 'UploadCategories', class: CategoriesController do
       it 'should import and report success' do
         expect do
           post '/api/categories/upload', params: {
-            categoryFile: fixture_file_upload('files/categories_valid.xlsx')
+            category_file: fixture_file_upload('files/categories/valid.xlsx')
           }
         end.to change(Category, :count).by 3
         expect(response).to have_http_status 200
-        expect(JSON.parse(response.body)).to eq('message' => 'Imported.')
+        expect(JSON.parse(response.body)).to eq('message' => 'Categories imported.')
+      end
+    end
+
+    context 'Headers Only' do
+      it 'should import and report success' do
+        expect do
+          post '/api/categories/upload', params: {
+            category_file: fixture_file_upload('files/categories/header.xlsx')
+          }
+        end.to_not change(Category, :count)
+        expect(response).to have_http_status 200
+        expect(JSON.parse(response.body)).to eq('message' => 'Categories imported.')
       end
     end
 
@@ -26,7 +38,7 @@ describe 'UploadCategories', class: CategoriesController do
       it 'should return an error' do
         expect do
           post '/api/categories/upload', params: {
-            categoryFile: fixture_file_upload('files/empty_file.xlsx')
+            category_file: fixture_file_upload('files/categories/no_header.xlsx')
           }
         end.to_not change(Category, :count)
         expect(response).to have_http_status 200
@@ -38,7 +50,7 @@ describe 'UploadCategories', class: CategoriesController do
       it 'should return an error' do
         expect do
           post '/api/categories/upload', params: {
-            categoryFile: fixture_file_upload('files/no_categories.xlsx')
+            category_file: fixture_file_upload('files/categories/no_sheet.xlsx')
           }
         end.to_not change(Category, :count)
         expect(response).to have_http_status 200
@@ -50,12 +62,25 @@ describe 'UploadCategories', class: CategoriesController do
       it 'should return an error' do
         expect do
           post '/api/categories/upload', params: {
-            categoryFile: fixture_file_upload('files/additional_column.xlsx')
+            category_file: fixture_file_upload('files/categories/extra_column.xlsx')
           }
         end.to_not change(Category, :count)
         expect(response).to have_http_status 200
         expect(JSON.parse(response.body)).to eq('message' =>
-          'The category sheet must contain two columns: Name, Parent')
+          'The import sheet must contain these columns: Name, Parent')
+      end
+    end
+
+    context 'Missing Columns' do
+      it 'should return an error' do
+        expect do
+          post '/api/categories/upload', params: {
+            category_file: fixture_file_upload('files/categories/missing_col.xlsx')
+          }
+        end.to_not change(Category, :count)
+        expect(response).to have_http_status 200
+        expect(JSON.parse(response.body)).to eq('message' =>
+          'The import sheet must contain these columns: Name, Parent')
       end
     end
 
@@ -63,7 +88,7 @@ describe 'UploadCategories', class: CategoriesController do
       it 'should return an error' do
         expect do
           post '/api/categories/upload', params: {
-            categoryFile: fixture_file_upload('files/categories_emptyrow.xlsx')
+            category_file: fixture_file_upload('files/categories/empty_row.xlsx')
           }
         end.to_not change(Category, :count)
         expect(response).to have_http_status 200
@@ -75,7 +100,7 @@ describe 'UploadCategories', class: CategoriesController do
       it 'should return an error' do
         expect do
           post '/api/categories/upload', params: {
-            categoryFile: fixture_file_upload('files/categories_nonexistantparent.xlsx')
+            category_file: fixture_file_upload('files/categories/nonexistant_parent.xlsx')
           }
         end.to_not change(Category, :count)
         expect(response).to have_http_status 200
@@ -87,7 +112,7 @@ describe 'UploadCategories', class: CategoriesController do
       it 'should return an error' do
         expect do
           post '/api/categories/upload', params: {
-            categoryFile: fixture_file_upload('files/random.bin')
+            category_file: fixture_file_upload('files/random.bin')
           }
         end.to_not change(Category, :count)
         expect(response).to have_http_status 200

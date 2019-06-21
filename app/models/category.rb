@@ -29,7 +29,6 @@ class Category < ApplicationRecord
     search_by_name(query)
   end
 
-  # TODO: Reduce Complexity / Split up.
   def self.batch_create(category_list)
     begin
       ActiveRecord::Base.transaction do
@@ -44,18 +43,18 @@ class Category < ApplicationRecord
   def self.create_from_row(row, number)
     raise "Blank field on row #{number}" if row.values.any?(&:blank?)
 
-    c = create_from_hash(row, number)
-    c.save
+    category = create_from_hash(row, number)
+    category.save
   end
 
   def self.create_from_hash(hash, line)
     parent = Category.find_by(name: hash[:parent])
     raise "Unable to find parent category #{hash[:parent]} on row #{line}" if parent.nil?
 
-    c = Category.new(name: hash[:name], parent: parent)
-    raise "Invalid Data: #{c.errors.full_messages.join(',')} on row #{line}" if c.errors.any?
+    category = Category.new(name: hash[:name], parent: parent)
+    raise "Invalid Data: #{c.errors.full_messages.join(',')} on row #{line}" if category.errors.any?
 
-    c
+    category
   end
 
   def parent_relation

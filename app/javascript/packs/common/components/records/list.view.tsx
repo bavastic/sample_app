@@ -16,6 +16,7 @@ import { default as ShowView } from './modals/show.view';
 import { default as UpdateView } from './modals/update.view';
 import { default as DestroyView } from './modals/destroy.view';
 import { default as UploadView } from './modals/upload.view';
+
 interface ModalProps {
   modalOpen: boolean;
   modalContent: Action;
@@ -29,6 +30,7 @@ interface ModalProps {
   renderDestroyTemplate?: (record: Record) => JSX.Element;
   renderUpdateTemplate?: (record: Record, parentSubmitRef: (ref: React.Component) => void) => JSX.Element;
   renderCreateTemplate?: (parentSubmitRef: (ref: React.Component) => void) => JSX.Element;
+  renderUploadTemplate?: (parentSubmitRef: (ref: React.Component) => void) => JSX.Element;
 }
 
 interface Properties extends ModalProps {
@@ -57,7 +59,8 @@ class RecordsListView extends React.Component<Properties> {
       renderShowTemplate,
       renderDestroyTemplate,
       renderUpdateTemplate,
-      renderCreateTemplate
+      renderCreateTemplate,
+      renderUploadTemplate
     } = this.props;
 
     let modal;
@@ -74,7 +77,7 @@ class RecordsListView extends React.Component<Properties> {
       case Action.Upload:
         modal = (
           <Modal open={modalOpen} closeModal={closeModal}>
-            <UploadView></UploadView>
+            <UploadView bodyRenderer={renderUploadTemplate} parentSubmitRef={this.setFormRef}></UploadView>
         </Modal>
         );
         break;
@@ -128,10 +131,8 @@ class RecordsListView extends React.Component<Properties> {
 
         <Segment raised textAlign='right'>
           <Button color='blue' onClick={this.handleCreateAction} content='New' icon='add' labelPosition='right'/>
-          <Button color='blue' onClick={this.handleUploadAction} content='Upload Categories' icon='upload' labelPosition='right' />
+          <Button color='blue' onClick={this.handleUploadAction} content='Upload Excel File' icon='upload' labelPosition='right' />
         </Segment>
-
-          
 
         {table}
         

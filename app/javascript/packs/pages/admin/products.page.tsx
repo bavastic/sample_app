@@ -10,6 +10,7 @@ import CategoryStore from '../../stores/category.store';
 import Loading from '../../common/components/loading';
 import RecordsListView from '../../common/components/records/list.view';
 import { ProductForm } from './product.forms';
+import { ProductUploadForm } from './product.upload';
 
 interface Properties {
 }
@@ -69,6 +70,7 @@ class ProductsAdminPage extends React.Component<Properties> {
           renderShowTemplate={this.templateShowAction}
           renderUpdateTemplate={this.templateUpdateAction}
           renderCreateTemplate={this.templateCreateAction}
+          renderUploadTemplate={this.templateUploadAction}
         />
       );
     }
@@ -120,6 +122,15 @@ class ProductsAdminPage extends React.Component<Properties> {
       />
     );
   };
+
+  private templateUploadAction = (parentSubmitRef: (ref: React.Component) => void): JSX.Element => {
+    return (
+      <ProductUploadForm
+        categoryOptions={this.categoryStore.options}
+        parentSubmitRef={parentSubmitRef}
+      />
+    );
+  }
 
 }
 

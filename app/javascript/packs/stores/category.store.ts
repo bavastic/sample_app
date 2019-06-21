@@ -16,9 +16,9 @@ export default class CategoryStore extends SimpleStore<Category> {
   }
 
   public uploadCategoryFile(file) {
-    console.log(this.basePath+'/upload')
+
     this.api.post(this.basePath+'/upload', file).then(res => {
-      console.log(res.statusText)
+
     });
   }
 
