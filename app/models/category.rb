@@ -18,7 +18,7 @@ class Category < ApplicationRecord
   has_many :children, class_name: 'Category', foreign_key: :parent_id, inverse_of: :parent, dependent: :destroy
   has_many :products, dependent: :destroy
 
-  validates :name, presence: true
+  validates :name, presence: true, uniqueness: true
   validate :parent_relation
 
   scope :search_by_name, ->(name) { where('name ILIKE ?', "%#{name}%") }

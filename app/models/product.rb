@@ -50,8 +50,8 @@ class Product < ApplicationRecord
 
   def self.create_from_hash(hash, line)
     category = Category.find_by(name: hash[:category])
-    Rails.logger.info category.inspect
     raise "Unable to find category #{hash[:category]} on row #{line}" if category.nil?
+
     hash[:category] = category # Found category? Put it in the hash.
 
     product = Product.new(hash)
@@ -59,7 +59,6 @@ class Product < ApplicationRecord
 
     product
   end
-
 
   private
 

@@ -44,9 +44,7 @@ export default class ProductStore extends SimpleStore<Product> {
 
   public uploadProductFile(file) {
 
-    this.api.post(this.basePath+'/upload', file).then(res => {
-
-    });
+    return(this.api.post(this.basePath+'/upload', file));
   }
 
   private getLatestExchange = async (base: string, symbol: string) => {

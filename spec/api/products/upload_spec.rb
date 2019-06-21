@@ -23,7 +23,7 @@ describe 'UploadProducts', class: ProductsController do
           }
         end.to change(Product, :count).by 5
         expect(response).to have_http_status 200
-        expect(JSON.parse(response.body)).to eq('message' => 'Products imported.')
+        expect(JSON.parse(response.body)).to eq('message' => nil)
       end
     end
 
@@ -35,7 +35,7 @@ describe 'UploadProducts', class: ProductsController do
           }
         end.to_not change(Product, :count)
         expect(response).to have_http_status 200
-        expect(JSON.parse(response.body)).to eq('message' => 'Products imported.')
+        expect(JSON.parse(response.body)).to eq('message' => nil)
       end
     end
 

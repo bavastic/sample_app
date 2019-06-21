@@ -2,12 +2,14 @@ import { inject, observer } from 'mobx-react';
 import * as React from 'react';
 import { Form, Select } from 'semantic-ui-react'
 import { Button } from 'semantic-ui-react';
+import Dropzone from 'react-dropzone';
 
 import { Option } from '../../stores/simple.store';
 import UiStore, { NotificationLevel } from '../../stores/ui.store';
 
 import CategoryStore from '../../stores/category.store';
 import Category from '../../models/category.model';
+import { logger } from '../../common/logger';
 
 interface Properties {
   category?: Category;
@@ -67,26 +69,39 @@ export class CategoryUploadForm extends React.Component<Properties> {
     return (
       <>
         <Form>
-        <input type="file" name="file" onChange={this.onChangeHandler}/>
-        <Button content='Upload File' onClick={this.onClickHandler} />
+          <Dropzone onDrop={acceptedFiles => this.upload(acceptedFiles[0])}>
+          {({getRootProps, getInputProps}) => (
+            <section>
+              <div {...getRootProps()}>
+              <p>Click here to select a file or just drag files onto this box.</p>
+              <div className='file_box'></div>
+              <input {...getInputProps()}/></div>
+            </section>
+          )}
+          </Dropzone>
         </Form>
       </>
     );
   }
 
-  onChangeHandler=event=>{
-    this.setState({
-        selectedFile: event.target.files[0],
-        loaded: 0,
-    })
-  }
-
-  onClickHandler = () => {
+  upload = (file) => {
     const data = new FormData();
-    data.append('category_file', this.state.selectedFile);
-    var cs = this.categoryStore;
-    console.log(this.state.selectedFile);
-    cs.uploadCategoryFile(data);
+    data.append('category_file', file);
+    this.categoryStore.uploadCategoryFile(data).then(res => {
+      if (res.message) {
+        this.uiStore.addNotifications({
+          level: NotificationLevel.Error,
+          message: res.message,
+        });
+      }
+      else {
+        this.uiStore.addNotifications({
+          level: NotificationLevel.Notice,
+          message: 'Import Successful.',
+        });
+      }
+      this.uiStore.setModalOpen(false);
+    });
   }
 
   /*

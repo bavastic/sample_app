@@ -2,6 +2,7 @@ import { inject, observer } from 'mobx-react';
 import * as React from 'react';
 import { Form, Select } from 'semantic-ui-react'
 import { Button } from 'semantic-ui-react';
+import Dropzone from 'react-dropzone';
 
 
 import { Option } from '../../stores/simple.store';
@@ -70,13 +71,42 @@ export class ProductUploadForm extends React.Component<Properties> {
 
     return (
       <>
-       <Form>
-        <input type="file" name="file" onChange={this.onChangeHandler}/>
-        <Button content='Upload File' onClick={this.onClickHandler} />
+        <Form>
+          <Dropzone onDrop={acceptedFiles => this.upload(acceptedFiles[0])}>
+          {({getRootProps, getInputProps}) => (
+            <section>
+              <div {...getRootProps()}>
+              <p>Click here to select a file or just drag files onto this box.</p>
+              <div className='file_box'></div>
+              <input {...getInputProps()}/></div>
+            </section>
+          )}
+          </Dropzone>
         </Form>
       </>
     );
   }
+
+  upload = (file) => {
+    const data = new FormData();
+    data.append('product_file', file);
+    this.productStore.uploadProductFile(data).then(res => {
+      if (res.message) {
+        this.uiStore.addNotifications({
+          level: NotificationLevel.Error,
+          message: res.message,
+        });
+      }
+      else {
+        this.uiStore.addNotifications({
+          level: NotificationLevel.Notice,
+          message: 'Import Successful.',
+        });
+      }
+      this.uiStore.setModalOpen(false);
+    });
+  }
+
 
   onChangeHandler=event=>{
     this.setState({

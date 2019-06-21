@@ -36,15 +36,15 @@ class ProductsController < ApplicationController
   end
 
   def upload
-    error, sheet = helpers.validate_spreadsheet(params[:product_file].tempfile, %w(Name Category Price Currency DisplayCurrency), 'Products')
+    error, sheet = helpers.validate_spreadsheet(params[:product_file].tempfile,
+                                                %w(Name Category Price Currency DisplayCurrency), 'Products')
     render(json: { message: error }) && return unless error.nil?
 
-    batch_result = Product.batch_create(sheet.parse(name: 'Name', category: 'Category', price: 'Price', currency: 'Currency', display_currency: 'DisplayCurrency'))
-    if batch_result.blank?
-      render(json: { message: 'Products imported.' }) && return
-    else
-      render(json: { message: batch_result }) && return
-    end
+    batch_result = Product.batch_create(sheet.parse(name: 'Name', category: 'Category',
+                                                    price: 'Price', currency: 'Currency',
+                                                    display_currency: 'DisplayCurrency'))
+    render(json: { message: nil }) && return if batch_result.blank?
+    render(json: { message: batch_result }) && return
   end
 
   def options

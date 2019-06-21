@@ -47,7 +47,7 @@ class CategoriesController < ApplicationController
 
     batch_result = Category.batch_create(sheet.parse(name: 'Name', parent: 'Parent'))
     if batch_result.blank?
-      render(json: { message: 'Categories imported.' }) && return
+      render(json: { message: nil }) && return
     else
       render(json: { message: batch_result }) && return
     end

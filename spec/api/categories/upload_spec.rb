@@ -18,7 +18,7 @@ describe 'UploadCategories', class: CategoriesController do
           }
         end.to change(Category, :count).by 3
         expect(response).to have_http_status 200
-        expect(JSON.parse(response.body)).to eq('message' => 'Categories imported.')
+        expect(JSON.parse(response.body)).to eq('message' => nil)
       end
     end
 
@@ -30,7 +30,7 @@ describe 'UploadCategories', class: CategoriesController do
           }
         end.to_not change(Category, :count)
         expect(response).to have_http_status 200
-        expect(JSON.parse(response.body)).to eq('message' => 'Categories imported.')
+        expect(JSON.parse(response.body)).to eq('message' => nil)
       end
     end
 
