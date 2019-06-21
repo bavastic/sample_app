@@ -16,7 +16,7 @@ describe 'UploadCategories', class: CategoriesController do
           post '/api/categories/upload', params: {
             categoryFile: fixture_file_upload('files/categories_valid.xlsx')
           }
-        end.to change { Category.count }.by 3
+        end.to change(Category, :count).by 3
         expect(response).to have_http_status 200
         expect(JSON.parse(response.body)).to eq('message' => 'Imported.')
       end
@@ -28,7 +28,7 @@ describe 'UploadCategories', class: CategoriesController do
           post '/api/categories/upload', params: {
             categoryFile: fixture_file_upload('files/empty_file.xlsx')
           }
-        end.to_not change { Category.count }
+        end.to_not change(Category, :count)
         expect(response).to have_http_status 200
         expect(JSON.parse(response.body)).to eq('message' => 'The sheet is empty.')
       end
@@ -40,7 +40,7 @@ describe 'UploadCategories', class: CategoriesController do
           post '/api/categories/upload', params: {
             categoryFile: fixture_file_upload('files/no_categories.xlsx')
           }
-        end.to_not change { Category.count }
+        end.to_not change(Category, :count)
         expect(response).to have_http_status 200
         expect(JSON.parse(response.body)).to eq('message' => 'The file must contain a sheet named Categories.')
       end
@@ -52,7 +52,7 @@ describe 'UploadCategories', class: CategoriesController do
           post '/api/categories/upload', params: {
             categoryFile: fixture_file_upload('files/additional_column.xlsx')
           }
-        end.to_not change { Category.count }
+        end.to_not change(Category, :count)
         expect(response).to have_http_status 200
         expect(JSON.parse(response.body)).to eq('message' =>
           'The category sheet must contain two columns: Name, Parent')
@@ -65,9 +65,9 @@ describe 'UploadCategories', class: CategoriesController do
           post '/api/categories/upload', params: {
             categoryFile: fixture_file_upload('files/categories_emptyrow.xlsx')
           }
-        end.to_not change { Category.count }
+        end.to_not change(Category, :count)
         expect(response).to have_http_status 200
-        expect(JSON.parse(response.body)).to eq('message' => 'Blank field on line 3')
+        expect(JSON.parse(response.body)).to eq('message' => 'Blank field on row 3')
       end
     end
 
@@ -77,9 +77,9 @@ describe 'UploadCategories', class: CategoriesController do
           post '/api/categories/upload', params: {
             categoryFile: fixture_file_upload('files/categories_nonexistantparent.xlsx')
           }
-        end.to_not change { Category.count }
+        end.to_not change(Category, :count)
         expect(response).to have_http_status 200
-        expect(JSON.parse(response.body)).to eq('message' => 'Unable to find parent category Birds on line 3')
+        expect(JSON.parse(response.body)).to eq('message' => 'Unable to find parent category Birds on row 3')
       end
     end
 
@@ -89,7 +89,7 @@ describe 'UploadCategories', class: CategoriesController do
           post '/api/categories/upload', params: {
             categoryFile: fixture_file_upload('files/random.bin')
           }
-        end.to_not change { Category.count }
+        end.to_not change(Category, :count)
         expect(response).to have_http_status 200
         expect(JSON.parse(response.body)).to eq('message' => 'Unable to process - is this an xlsx/xls file?')
       end
