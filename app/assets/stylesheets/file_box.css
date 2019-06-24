@@ -1,0 +1,15 @@
+div.file-box {
+  height: 20em;
+  width: 100%;
+  border: 2px dashed darkgray;
+  border-radius: 5px;
+  background-color: white;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+div.file-box h3 {
+  margin-top: 0px;
+}

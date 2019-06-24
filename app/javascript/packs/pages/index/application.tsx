@@ -56,12 +56,12 @@ class Application extends React.Component<Properties> {
     return (
       <>
         <ApplicationMenu/>
-
+        <ApplicationStatus defaultTimeout={3000} />
         <Container text style={{ margin: '2em 0' }}>
           {controller}
         </Container>
 
-        <ApplicationStatus defaultTimeout={3000} />
+        
       </>
     );
   }

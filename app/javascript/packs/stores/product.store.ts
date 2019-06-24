@@ -42,6 +42,11 @@ export default class ProductStore extends SimpleStore<Product> {
     }
   };
 
+  public uploadProductFile(file) {
+
+    return(this.api.post(this.basePath+'/upload', file));
+  }
+
   private getLatestExchange = async (base: string, symbol: string) => {
     try {
       const url = `https://data.fixer.io/api/latest?access_key=${this.FIXERIO_KEY}&base=${base}&symbols=${symbol}`;

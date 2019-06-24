@@ -1,7 +1,11 @@
 # frozen_string_literal: true
 
 class ApplicationController < ActionController::Base
-  rescue_from Exception do
+  rescue_from Exception do |exception|
+    # Log the exception for devs to fix/look at
+    Rails.logger.error exception.message
+    Rails.logger.error exception.backtrace.join('\n')
+    # Show the user an error.
     render_error(
       message: "#{error_target}: unknown error!",
       status: :internal_server_error

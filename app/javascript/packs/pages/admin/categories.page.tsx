@@ -9,6 +9,7 @@ import Category from '../../models/category.model';
 import Loading from '../../common/components/loading';
 import RecordsListView from '../../common/components/records/list.view';
 import { CategoryForm } from './category.forms';
+import { CategoryUploadForm } from './category.upload';
 
 interface Properties {
 }
@@ -63,6 +64,7 @@ class CategoriesAdminPage extends React.Component<Properties> {
           renderShowTemplate={this.templateShowAction}
           renderUpdateTemplate={this.templateUpdateAction}
           renderCreateTemplate={this.templateCreateAction}
+          renderUploadTemplate={this.templateUploadAction}
         />
       );
     }
@@ -115,6 +117,15 @@ class CategoriesAdminPage extends React.Component<Properties> {
   private templateCreateAction = (parentSubmitRef: (ref: React.Component) => void): JSX.Element => {
     return (
       <CategoryForm
+        parentCategoryOptions={this.categoryStore.options}
+        parentSubmitRef={parentSubmitRef}
+      />
+    );
+  };
+
+  private templateUploadAction = (parentSubmitRef: (ref: React.Component) => void): JSX.Element => {
+    return (
+      <CategoryUploadForm
         parentCategoryOptions={this.categoryStore.options}
         parentSubmitRef={parentSubmitRef}
       />

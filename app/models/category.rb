@@ -18,7 +18,7 @@ class Category < ApplicationRecord
   has_many :children, class_name: 'Category', foreign_key: :parent_id, inverse_of: :parent, dependent: :destroy
   has_many :products, dependent: :destroy
 
-  validates :name, presence: true
+  validates :name, presence: true, uniqueness: true
   validate :parent_relation
 
   scope :search_by_name, ->(name) { where('name ILIKE ?', "%#{name}%") }
@@ -27,6 +27,34 @@ class Category < ApplicationRecord
 
   def self.search_by(query:)
     search_by_name(query)
+  end
+
+  def self.batch_create(category_list)
+    begin
+      ActiveRecord::Base.transaction do
+        category_list.each_with_index { |row, i| create_from_row(row, i + 2) }
+      end
+    rescue RuntimeError => e
+      return e.message
+    end
+    nil
+  end
+
+  def self.create_from_row(row, number)
+    raise "Blank field on row #{number}" if row.values.any?(&:blank?)
+
+    category = create_from_hash(row, number)
+    category.save
+  end
+
+  def self.create_from_hash(hash, line)
+    parent = Category.find_by(name: hash[:parent])
+    raise "Unable to find parent category #{hash[:parent]} on row #{line}" if parent.nil?
+
+    category = Category.new(name: hash[:name], parent: parent)
+    raise "Invalid Data: #{c.errors.full_messages.join(',')} on row #{line}" if category.errors.any?
+
+    category
   end
 
   def parent_relation

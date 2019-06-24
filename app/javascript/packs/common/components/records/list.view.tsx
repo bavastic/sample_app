@@ -15,6 +15,7 @@ import { default as CreateView } from './modals/create.view';
 import { default as ShowView } from './modals/show.view';
 import { default as UpdateView } from './modals/update.view';
 import { default as DestroyView } from './modals/destroy.view';
+import { default as UploadView } from './modals/upload.view';
 
 interface ModalProps {
   modalOpen: boolean;
@@ -29,6 +30,7 @@ interface ModalProps {
   renderDestroyTemplate?: (record: Record) => JSX.Element;
   renderUpdateTemplate?: (record: Record, parentSubmitRef: (ref: React.Component) => void) => JSX.Element;
   renderCreateTemplate?: (parentSubmitRef: (ref: React.Component) => void) => JSX.Element;
+  renderUploadTemplate?: (parentSubmitRef: (ref: React.Component) => void) => JSX.Element;
 }
 
 interface Properties extends ModalProps {
@@ -58,6 +60,7 @@ class RecordsListView extends React.Component<Properties> {
       renderDestroyTemplate,
       renderUpdateTemplate,
       renderCreateTemplate,
+      renderUploadTemplate
     } = this.props;
 
     let modal;
@@ -71,6 +74,13 @@ class RecordsListView extends React.Component<Properties> {
         );
         break;
 
+      case Action.Upload:
+        modal = (
+          <Modal open={modalOpen} closeModal={closeModal}>
+            <UploadView bodyRenderer={renderUploadTemplate} parentSubmitRef={this.setFormRef}></UploadView>
+        </Modal>
+        );
+        break;
       case Action.Destroy:
         modal = (
           <Modal open={modalOpen} closeModal={closeModal}
@@ -121,10 +131,14 @@ class RecordsListView extends React.Component<Properties> {
 
         <Segment raised textAlign='right'>
           <Button color='blue' onClick={this.handleCreateAction} content='New' icon='add' labelPosition='right'/>
+          <Button color='blue' onClick={this.handleUploadAction} content='Upload Excel File' icon='upload' labelPosition='right' />
         </Segment>
 
         {table}
-      </>
+        
+        
+        
+        </>
     );
   }
 
@@ -210,6 +224,16 @@ class RecordsListView extends React.Component<Properties> {
     this.props.closeModal();
     this.props.resetModal();
     this.state.formRef.doSubmit();
+  };
+
+  /*
+   * Upload action: Open Upload Modal.
+   */
+  private handleUploadAction = (event: React.MouseEvent<HTMLButtonElement>, data: ButtonProps) => {
+    logger.of('handleUploadAction').trace();
+
+    this.props.toggleModal(Action.Upload);
+    this.props.openModal();
   };
 
   /*
