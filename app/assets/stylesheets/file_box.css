@@ -1,15 +1,15 @@
 div.file-box {
   height: 20em;
   width: 100%;
-  border: 3px solid green;
-  background-color: lightgreen;
+  border: 2px dashed darkgray;
+  border-radius: 5px;
+  background-color: white;
   text-align: center;
   display: flex;
   flex-direction: column;
   justify-content: center;
 }
 
-div.file_box p {
-  color: darkgreen;
-  font-size: 16px;
+div.file-box h3 {
+  margin-top: 0px;
 }
